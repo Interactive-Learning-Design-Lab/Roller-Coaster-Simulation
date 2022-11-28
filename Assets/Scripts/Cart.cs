@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 public class Cart : MonoBehaviour
 {
-  public float mass = 5f;
+  [SerializeField]
+  bool paused = true;
+
+  public float mass = 1f;
 
   float gravity = 9.81f;
 
@@ -15,6 +18,8 @@ public class Cart : MonoBehaviour
 
   Text velocityText;
   Text accelerationText;
+  GameObject startButton;
+  GameObject pauseButton;
 
   [SerializeField]
   bool onTrack = false;
@@ -24,10 +29,40 @@ public class Cart : MonoBehaviour
 
   TrackManager track;
 
+  public void StartSim()
+  {
+    pauseButton.SetActive(true);
+    startButton.SetActive(false);
+    paused = false;
+  }
+
+  public void PauseSim()
+  {
+    pauseButton.SetActive(false);
+    startButton.SetActive(true);
+    paused = true;
+  }
+
+  public void RestartSim()
+  {
+    transform.position = track.trackPoints[0];
+    velocity = Vector3.zero;
+    acceleration = Vector3.zero;
+    paused = false;
+  }
+
+  public void SetMass(float mass)
+  {
+    this.mass = mass;
+  }
 
   // Start is called before the first frame update
   void Start()
   {
+    startButton = GameObject.Find("Start");
+    pauseButton = GameObject.Find("Pause");
+    PauseSim();
+
     velocityText = GameObject.Find("Velocity").GetComponent<Text>();
     accelerationText = GameObject.Find("Acceleration").GetComponent<Text>();
     Time.timeScale = 0.2f;
@@ -41,7 +76,7 @@ public class Cart : MonoBehaviour
     velocityText.text = "Velocity: " + velocity.magnitude;
     accelerationText.text = "Acceleration: " + acceleration.magnitude;
     // for (int i = 0; i < 1 && track.trackPoints.Count > 0; i++)
-    if (track.trackPoints.Count > 0)
+    if (!paused && track.trackPoints.Count > 0)
     {
       netForce = Vector3.zero;
 
@@ -90,11 +125,17 @@ public class Cart : MonoBehaviour
       }
       // Quaternion.Euler(0, 0, -theta) * Vector3.right * Vector3.Magnitude(velocity);
       Debug.DrawRay(transform.position, Quaternion.Euler(0, 0, -theta) * Vector3.right * Vector3.Magnitude(velocity));
-
-      if (Vector3.SqrMagnitude(closest[1] - closest[2]) < 0.0001f){
+      if (Vector3.SqrMagnitude(closest[1] - closest[2]) < 0.0001f)
+      {
         velocity = Vector3.zero;
         acceleration = Vector3.zero;
       }
+
+    }
+    else if (!paused)
+    {
+      velocity = Vector3.zero;
+      acceleration = Vector3.zero;
     }
   }
 }

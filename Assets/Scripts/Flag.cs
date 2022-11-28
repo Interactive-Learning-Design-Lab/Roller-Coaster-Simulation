@@ -64,7 +64,7 @@ public class Flag : MonoBehaviour
 
     float planeDist;
     dragPlane.Raycast(camRay, out planeDist);
-    transform.position = new Vector3(camRay.GetPoint(planeDist).x + offset.x, camRay.GetPoint(planeDist).y + offset.y);
+    transform.position = new Vector3(camRay.GetPoint(planeDist).x + offset.x, camRay.GetPoint(planeDist).y + offset.y, camRay.GetPoint(planeDist).z + offset.z);
 
   }
 

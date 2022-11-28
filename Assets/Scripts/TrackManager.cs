@@ -42,8 +42,8 @@ public class TrackManager : MonoBehaviour
 
   public void CreateTrack()
   {
-    int w = int.Parse(width);
-    int h = int.Parse(height);
+  float w = float.Parse(width);
+  float h = float.Parse(height);
 
     if (w > 0 && h > 0)
     {
@@ -58,8 +58,8 @@ public class TrackManager : MonoBehaviour
   {
     if (selected != null)
     {
-      int w = int.Parse(width);
-      int h = int.Parse(height);
+    float w = float.Parse(width);
+    float h = float.Parse(height);
 
       if (w > 0 && h > 0)
       {

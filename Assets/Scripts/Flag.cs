@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Flag : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class Flag : MonoBehaviour
   public float pe;
   public float ke;
 
+  public Text velText;
+  public Text accText;
+  static GameObject selected;
   // Drag & pan helper vars
   Plane dragPlane;
   Vector3 offset;
@@ -22,6 +26,9 @@ public class Flag : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
+    velText = GameObject.Find("Flag Velocity").GetComponent<Text>();
+    accText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
+
     cart = GameObject.Find("Cart").transform;
 
     cartScript = cart.GetComponent<Cart>();
@@ -32,6 +39,7 @@ public class Flag : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
+
     // Debug.Log(smallestDistance + " "  + Vector3.SqrMagnitude(transform.position - cart.position));
     // Debug.Log(smallestDistance > Vector3.SqrMagnitude(transform.position - cart.position));
     if (Vector3.SqrMagnitude(transform.position - cart.position) < smallestDistance)
@@ -46,10 +54,15 @@ public class Flag : MonoBehaviour
 
 
     }
+    if(selected == gameObject) {
+      velText.text = "Velocity: " + velocity.magnitude;
+      accText.text = "Acceleration: " + acceleration.magnitude;
+    }
   }
 
   void OnMouseDown()
   {
+    selected = gameObject;
     dragPlane = new Plane(mainCam.transform.forward, transform.position);
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 

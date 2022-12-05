@@ -48,6 +48,8 @@ public class Cart : MonoBehaviour
     transform.position = track.trackPoints[0];
     velocity = Vector3.zero;
     acceleration = Vector3.zero;
+    pauseButton.SetActive(true);
+    startButton.SetActive(false);
     paused = false;
   }
 

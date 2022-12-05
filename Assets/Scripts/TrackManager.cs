@@ -5,8 +5,7 @@ using UnityEngine;
 public class TrackManager : MonoBehaviour
 {
   public List<Vector3> trackPoints = new List<Vector3>();
-  LineRenderer
-  lineRenderer;
+  LineRenderer lineRenderer;
 
   [SerializeField]
   public GameObject connectorPrefab;
@@ -26,6 +25,21 @@ public class TrackManager : MonoBehaviour
   {
     type = _type;
     EditTrack();
+  }
+
+  public void SetCreationType(int _type)
+  {
+    type = _type;
+  }
+
+  public void SetHeight(string _height)
+  {
+    height = _height;
+  }
+
+  public void setWidth(string _width)
+  {
+    width = _width;
   }
 
   public void SetHeight(float _height)
@@ -174,6 +188,8 @@ public class TrackManager : MonoBehaviour
     // Debug.Log(GetInstance().trackPoints.Count);
     GetInstance().lineRenderer.positionCount = GetInstance().trackPoints.Count;
     GetInstance().lineRenderer.SetPositions(GetInstance().trackPoints.ToArray());
+    
+    GameObject.Find("Cart").GetComponent<Cart>().RestartSim();
   }
 
   public static void FillGaps()

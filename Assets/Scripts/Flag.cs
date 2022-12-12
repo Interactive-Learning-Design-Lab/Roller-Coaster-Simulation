@@ -23,6 +23,11 @@ public class Flag : MonoBehaviour
 
   Transform cart;
   Cart cartScript;
+
+  public void Reset() {
+    closest = new Vector3(-100, 0, 0);
+    smallestDistance = float.PositiveInfinity;
+  }
   // Start is called before the first frame update
   void Start()
   {

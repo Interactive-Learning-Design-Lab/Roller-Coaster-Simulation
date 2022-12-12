@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2378747965681496488}
   m_Layer: 0
   m_Name: Flag
-  m_TagString: Untagged
+  m_TagString: Flag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,6 +49,8 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   pe: 0
   ke: 0
+  velText: {fileID: 0}
+  accText: {fileID: 0}
 --- !u!212 &5042295724816394433
 SpriteRenderer:
   m_ObjectHideFlags: 0

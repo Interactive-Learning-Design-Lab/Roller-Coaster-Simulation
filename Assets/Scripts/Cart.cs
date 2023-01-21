@@ -10,7 +10,7 @@ public class Cart : MonoBehaviour
 
   public float mass = 1f;
 
-  float gravity = 0.001f * 9.81f;
+  float gravity = 0.00001f * 9.81f;
 
   public float KE;
   public float PE;
@@ -88,7 +88,7 @@ public class Cart : MonoBehaviour
     PEText = GameObject.Find("PE").GetComponent<Text>();
     TEText = GameObject.Find("TE").GetComponent<Text>();
     RAText = GameObject.Find("RA").GetComponent<Text>();
-    Time.timeScale = 0.2f;
+    Time.timeScale = 2f;
     track = GameObject.FindGameObjectWithTag("Track Manager").GetComponent<TrackManager>();
     transform.position = track.trackPoints[0];
     PauseSim();
@@ -112,37 +112,41 @@ public class Cart : MonoBehaviour
       transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
 
       Vector3[] closestPoints = track.GetClosestPoints(transform.position);
+      //Debug.Log((closestPoints[2]-closestPoints[0]).ToString());
       Vector3 currentPoint = closestPoints[1];
       netForce = Vector3.zero;
 
-
       Vector3 weight = mass * gravity * Vector3.down;
+      Debug.Log("weight.ToString()");
+      //Debug.Log(weight[1]);
+
       netForce += weight;
-      Debug.DrawRay(transform.position, weight * 100, Color.blue); // weight: blue
+      //Debug.DrawRay(transform.position, weight * 100, Color.blue); // weight: blue
 
 
       Vector3 normalForce = weight.magnitude * Mathf.Cos(theta) * -transform.up;
       netForce += normalForce;
-      Debug.DrawRay(transform.position, normalForce * 100, Color.red); // normal: red
+      //Debug.DrawRay(transform.position, normalForce * 10000, Color.red); // normal: red
 
 
 
-      Debug.DrawRay(transform.position, netForce * 100, Color.white);
+      //Debug.DrawRay(transform.position, netForce * 100000, Color.white);
 
 
       // apply forces
-      acceleration = 1 * netForce / mass;
-      Debug.DrawRay(transform.position, acceleration * 100, Color.cyan);
+      acceleration = (1/mass)*netForce;
+      Debug.Log(acceleration.magnitude);
+      //Debug.DrawRay(transform.position, acceleration * 100, Color.cyan);
 
       velocity += acceleration.magnitude * Mathf.Sin(theta) * transform.right;
-      Debug.DrawRay(transform.position, velocity * 100, Color.magenta);
+      //Debug.DrawRay(transform.position, velocity * 100, Color.magenta);
       if (Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f)
       {
         velocity = Vector3.zero;
         acceleration = Vector3.zero;
       }
       transform.position += velocity.magnitude * Vector3.Normalize(closestPoints[2] - closestPoints[0]);// * Time.fixedDeltaTime;
-      Debug.Log(theta);
+      //Debug.Log(theta);
 
       PE = mass * gravity * transform.position.y;
       KE = 0.5f * mass * velocity.sqrMagnitude;

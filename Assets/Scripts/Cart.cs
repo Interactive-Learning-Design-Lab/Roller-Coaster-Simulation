@@ -10,7 +10,7 @@ public class Cart : MonoBehaviour
 
   public float mass = 1f;
 
-  float gravity = 0.00005f * 9.81f;
+  float gravity = 0.00001f * 9.81f;
 
   public float KE;
   public float PE;
@@ -129,10 +129,13 @@ public class Cart : MonoBehaviour
             Debug.Log(transform.rotation);
 
       Vector3[] closestPoints = track.GetClosestPoints(transform.position);
-            Debug.Log("closestPoints");
+      //Debug.Log((closestPoints[2]-closestPoints[0]).ToString());
       Vector3 currentPoint = closestPoints[1];
       netForce = Vector3.zero;
       Vector3 weight = mass * gravity * Vector3.down;
+      Debug.Log("weight.ToString()");
+      //Debug.Log(weight[1]);
+
       netForce += weight;
       //Debug.DrawRay(transform.position, weight * 100, Color.blue); // weight: blue
 
@@ -142,8 +145,7 @@ public class Cart : MonoBehaviour
       //Debug.DrawRay(transform.position, netForce * 100, Color.white);
 
       // apply forces
-      acceleration = 1 * netForce / mass;
-      Debug.Log("acceleration");
+      acceleration = (1/mass)*netForce;
       Debug.Log(acceleration.magnitude);
       //Debug.DrawRay(transform.position, acceleration * 100, Color.cyan);
 
@@ -155,7 +157,7 @@ public class Cart : MonoBehaviour
         acceleration = Vector3.zero;
       }
       transform.position += velocity.magnitude * Vector3.Normalize(closestPoints[2] - closestPoints[0]);// * Time.fixedDeltaTime;
-      //Debug.Log(theta)
+      //Debug.Log(theta);
 
       PE = mass * 9.81f * transform.position.y;
       KE = 0.5f * mass * velocity.sqrMagnitude;

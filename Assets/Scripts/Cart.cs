@@ -148,8 +148,8 @@ public class Cart : MonoBehaviour
       transform.position += velocity.magnitude * Vector3.Normalize(closestPoints[2] - closestPoints[0]);// * Time.fixedDeltaTime;
       //Debug.Log(theta);
 
-      PE = mass * gravity * transform.position.y;
-      KE = 0.5f * mass * velocity.sqrMagnitude;
+      PE = mass * 9.81f * transform.position.y;
+      KE = TE-KE; 0.5f * mass * velocity.sqrMagnitude;
       
 
       // Vector3[]? closest = null;

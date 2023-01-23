@@ -149,7 +149,7 @@ public class Cart : MonoBehaviour
       //Debug.Log(theta);
 
       PE = mass * 9.81f * transform.position.y;
-      KE = TE-KE; 0.5f * mass * velocity.sqrMagnitude;
+      KE = TE-KE;// 0.5f * mass * velocity.sqrMagnitude;
       
 
       // Vector3[]? closest = null;

@@ -122,6 +122,10 @@ public class TrackManager : MonoBehaviour
     for (int i = 0; i < trackPoints.Count; i++)
     {
       float sqDist = Vector3.SqrMagnitude(position - trackPoints[i]);
+      // Debug.Log("position");
+      // Debug.Log(position);
+      //       Debug.Log("trackPoints["+i+"]");
+      // Debug.Log(trackPoints[i]);
       if (sqDist < shortestDist)
       {
         shortestDist = sqDist;
@@ -157,12 +161,12 @@ public class TrackManager : MonoBehaviour
     //   closest = closestPoint;
     // }
     // else
-    {
+    //{
       closest = GetClosestPoints(position);
-    }
+    //}
 
-    Vector3 delta = closest[2] - closest[0];
-    return Mathf.Atan2(-delta.y, -delta.x);
+    Vector3 delta = closest[2] - closest[1];
+    return Mathf.Atan2(delta.y, delta.x);
   }
 
   void Start()

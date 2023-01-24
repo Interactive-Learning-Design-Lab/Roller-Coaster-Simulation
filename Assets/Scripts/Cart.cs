@@ -17,7 +17,9 @@ public class Cart : MonoBehaviour
   public float TE;
   public Vector3 netForce;
   public Vector3 acceleration;
+  public float accel;
   public Vector3 velocity = new Vector3(1f, 0);
+  public float vel;
   public float releaseHeight;
 
 
@@ -73,10 +75,12 @@ public class Cart : MonoBehaviour
     releaseHeight = transform.position.y;
     TE = mass * 9.81f * releaseHeight;
     velocity = Vector3.zero;
+    vel = 0f;
     acceleration = Vector3.zero;
-    pauseButton.SetActive(false);
-    startButton.SetActive(true);
-    paused = true;
+    accel = 0f;
+    pauseButton.SetActive(true);
+    startButton.SetActive(false);
+    paused = false;
     GameObject[] flags = GameObject.FindGameObjectsWithTag("Flag");
     foreach (GameObject flag in flags)
     {
@@ -158,14 +162,19 @@ float KE_Previous = KE;
       {
         velocity = Vector3.zero;
         acceleration = Vector3.zero;
+        accel = 0;
       }
       transform.position += velocity.magnitude * Vector3.Normalize(closestPoints[2] - closestPoints[0]);// * Time.fixedDeltaTime;
       //Debug.Log(theta);
 
       PE = mass * 9.81f * transform.position.y;
-      KE = TE-PE;// 0.5f * mass * velocity.sqrMagnitude;
+      KE = TE-PE; // 0.5f * mass * velocity.sqrMagnitude;
+      vel = Mathf.Sqrt((2*KE)/mass);
       float WorkDone = KE-KE_Previous;
-      //acceleration = WorkDone/(positiondiff.magnitude*mass);
+      Vector3 positiondiff = closestPoints[2]-closestPoints[1];
+      accel = WorkDone/(positiondiff.magnitude*mass);
+      Debug.Log("accel");
+      Debug.Log(accel);
 
       // Vector3[]? closest = null;
       // int k = 10;

@@ -17,7 +17,9 @@ public class Cart : MonoBehaviour
   public float TE;
   public Vector3 netForce;
   public Vector3 acceleration;
+  public float accel;
   public Vector3 velocity = new Vector3(1f, 0);
+  public float vel;
   public float releaseHeight;
 
 
@@ -56,9 +58,11 @@ public class Cart : MonoBehaviour
   {
     transform.position = track.trackPoints[0];
     releaseHeight = transform.position.y;
-    TE = mass * gravity * releaseHeight;
+    TE = mass * 9.81f * releaseHeight;
     velocity = Vector3.zero;
+    vel = 0f;
     acceleration = Vector3.zero;
+    accel = 0f;
     pauseButton.SetActive(true);
     startButton.SetActive(false);
     paused = false;
@@ -97,8 +101,8 @@ public class Cart : MonoBehaviour
   // Update is called once per frame
   void FixedUpdate()
   {
-    velocityText.text = "Velocity:\n" + velocity.magnitude;
-    accelerationText.text = "Acceleration:\n" + acceleration.magnitude;
+    velocityText.text = "Velocity:\n" + vel;
+    accelerationText.text = "Acceleration:\n" + accel;
     KEText.text = "Kinetic Energy:\n" + KE;
     PEText.text = "Potential Energy:\n" + PE;
     TEText.text = "Total Energy:\n" + TE;
@@ -147,14 +151,19 @@ float KE_Previous = KE;
       {
         velocity = Vector3.zero;
         acceleration = Vector3.zero;
+        accel = 0;
       }
       transform.position += velocity.magnitude * Vector3.Normalize(closestPoints[2] - closestPoints[0]);// * Time.fixedDeltaTime;
       //Debug.Log(theta);
 
       PE = mass * 9.81f * transform.position.y;
-      KE = TE-PE;// 0.5f * mass * velocity.sqrMagnitude;
+      KE = TE-PE; // 0.5f * mass * velocity.sqrMagnitude;
+      vel = Mathf.Sqrt((2*KE)/mass);
       float WorkDone = KE-KE_Previous;
-      //acceleration = WorkDone/(positiondiff.magnitude*mass);
+      Vector3 positiondiff = closestPoints[2]-closestPoints[1];
+      accel = WorkDone/(positiondiff.magnitude*mass);
+      Debug.Log("accel");
+      Debug.Log(accel);
 
       // Vector3[]? closest = null;
       // int k = 10;

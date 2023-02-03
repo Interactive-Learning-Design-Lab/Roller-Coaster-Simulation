@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Cart : MonoBehaviour
 {
   [SerializeField]
-  bool paused = true;
+  public bool paused = false;
 
   public float mass = 1f;
 
@@ -59,9 +59,9 @@ public class Cart : MonoBehaviour
     TE = mass * 9.81f * releaseHeight;
     velocity = Vector3.zero;
     acceleration = Vector3.zero;
-    pauseButton.SetActive(true);
-    startButton.SetActive(false);
-    paused = false;
+    pauseButton.SetActive(false);
+    startButton.SetActive(true);
+    paused = true;
     GameObject[] flags = GameObject.FindGameObjectsWithTag("Flag");
     foreach (GameObject flag in flags)
     {
@@ -97,12 +97,13 @@ public class Cart : MonoBehaviour
   // Update is called once per frame
   void FixedUpdate()
   {
-    velocityText.text = "Velocity:\n" + velocity.magnitude;
-    accelerationText.text = "Acceleration:\n" + acceleration.magnitude;
-    KEText.text = "Kinetic Energy:\n" + KE;
-    PEText.text = "Potential Energy:\n" + PE;
-    TEText.text = "Total Energy:\n" + (KE+PE);
-    RAText.text = "Release Height:\n" + releaseHeight;
+    velocityText.text = "Velocity:\n" + velocity.magnitude.ToString("F2") + " m/s";
+    accelerationText.text = "Acceleration:\n" + acceleration.magnitude.ToString("F2") + " m/s^2";
+    KEText.text = "Kinetic Energy:\n" + KE.ToString("F2") + " j";
+    PEText.text = "Potential Energy:\n" + PE.ToString("F2") + " j";
+    TEText.text = "Total Energy:\n" + TE.ToString("F2") + " j";
+    RAText.text = "Initial Drop:\n" + releaseHeight.ToString("F2") + " m";
+
     // for (int i = 0; i < 1 && track.trackPoints.Count > 0; i++)
     if (!paused && track.trackPoints.Count > 0)
     {
@@ -143,6 +144,43 @@ public class Cart : MonoBehaviour
 
       PE = mass * 9.81f * transform.position.y;
       KE = 0.5f * mass * velocity.sqrMagnitude;
+      
+      // v = d/t  t = d/v
+      float time = distance/speed;
+
+      // netForce = Vector3.zero;
+
+
+      // Vector3 weight = mass * gravity * Vector3.down;
+      // netForce += weight;
+      // Debug.DrawRay(transform.position, weight * 100, Color.blue); // weight: blue
+
+
+      // Vector3 normalForce = weight.magnitude * Mathf.Cos(theta) * -transform.up;
+      // netForce += normalForce;
+      // Debug.DrawRay(transform.position, normalForce * 100, Color.red); // normal: red
+
+
+
+      // Debug.DrawRay(transform.position, netForce * 100, Color.white);
+
+
+      // // apply forces
+      // acceleration = 1 * netForce / mass;
+      // Debug.DrawRay(transform.position, acceleration * 100, Color.cyan);
+
+      // velocity += acceleration.magnitude * Mathf.Sin(theta) * transform.right;
+      // Debug.DrawRay(transform.position, velocity * 100, Color.magenta);
+      // if (Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f)
+      // {
+      //   velocity = Vector3.zero;
+      //   acceleration = Vector3.zero;
+      // }
+      // transform.position += velocity.magnitude * Vector3.Normalize(closestPoints[2] - closestPoints[0]);// * Time.fixedDeltaTime;
+      // Debug.Log(theta);
+
+      // PE = mass * gravity * transform.position.y;
+      // KE = 0.5f * mass * velocity.sqrMagnitude;
       
 
       // Vector3[]? closest = null;

@@ -28,6 +28,7 @@ public class Track : MonoBehaviour
   [SerializeField]
   LineRenderer lineRenderer;
   BoxCollider2D hitbox;
+  Cart cart;
 
   // Points of current track
   [SerializeField] List<Vector3> points;
@@ -56,7 +57,8 @@ public class Track : MonoBehaviour
     this.type = type;
   }
 
-  public void Delete() {
+  public void Delete()
+  {
     points = new List<Vector3>();
     lineRenderer.positionCount = 0;
     Destroy(gameObject);
@@ -70,6 +72,7 @@ public class Track : MonoBehaviour
     points = new List<Vector3>();
     mainCam = Camera.main;
     hitbox = GetComponent<BoxCollider2D>();
+    cart = GameObject.Find("Cart").GetComponent<Cart>();
     heightText = GameObject.Find("Height Input").GetComponent<Slider>();
     widthText = GameObject.Find("Width Input").GetComponent<Slider>();
     typeDropdown = GameObject.Find("Type").GetComponent<Dropdown>();
@@ -191,7 +194,7 @@ public class Track : MonoBehaviour
     Initialize();
     GeneratePoints();
     Render();
-    
+
     // TrackManager.UpdateTracks();
   }
 
@@ -203,38 +206,44 @@ public class Track : MonoBehaviour
 
   void OnMouseDown()
   {
-    editMenu.SetActive(true);
+    if (cart.paused)
+    {
+      editMenu.SetActive(true);
 
-    TrackManager.selected = this;
-    TrackManager.height = height.ToString();
-    TrackManager.width = width.ToString();
-    TrackManager.type = (int) type;
+      TrackManager.selected = this;
+      TrackManager.height = height.ToString();
+      TrackManager.width = width.ToString();
+      TrackManager.type = (int)type;
 
-    heightText.value = height;
-    widthText.value = width;
-    typeDropdown.value = (int) type;
-    Debug.Log(typeDropdown.value);
-    Debug.Log((int) type);
+      heightText.value = height;
+      widthText.value = width;
+      typeDropdown.value = (int)type;
+      Debug.Log(typeDropdown.value);
+      Debug.Log((int)type);
 
-    dragPlane = new Plane(mainCam.transform.forward, transform.position);
-    Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
+      dragPlane = new Plane(mainCam.transform.forward, transform.position);
+      Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 
-    float planeDist;
-    dragPlane.Raycast(camRay, out planeDist);
-    offset = transform.position - camRay.GetPoint(planeDist);
+      float planeDist;
+      dragPlane.Raycast(camRay, out planeDist);
+      offset = transform.position - camRay.GetPoint(planeDist);
+    }
   }
 
   void OnMouseDrag()
   {
-    Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
+    if (cart.paused)
+    {
+      Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 
-    float planeDist;
-    dragPlane.Raycast(camRay, out planeDist);
-    transform.position = new Vector3(camRay.GetPoint(planeDist).x + offset.x, 0);
-    
-    GeneratePoints();
-    Render();
-    TrackManager.UpdateTracks();
+      float planeDist;
+      dragPlane.Raycast(camRay, out planeDist);
+      transform.position = new Vector3(camRay.GetPoint(planeDist).x + offset.x, 0);
+
+      GeneratePoints();
+      Render();
+      TrackManager.UpdateTracks();
+    }
   }
 
 

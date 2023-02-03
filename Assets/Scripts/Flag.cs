@@ -24,6 +24,8 @@ public class Flag : MonoBehaviour
   Transform cart;
   Cart cartScript;
 
+  Color flagColor;
+  static int colorIndex = 0;
   public void Reset() {
     closest = new Vector3(-100, 0, 0);
     smallestDistance = float.PositiveInfinity;
@@ -31,6 +33,8 @@ public class Flag : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
+    flagColor = Color.HSVToRGB((++colorIndex % 12f) / 12f, .7f, .9f);
+    GetComponent<SpriteRenderer>().color = flagColor;
     velText = GameObject.Find("Flag Velocity").GetComponent<Text>();
     accText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
 

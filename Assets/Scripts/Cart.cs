@@ -146,7 +146,6 @@ public class Cart : MonoBehaviour
       KE = 0.5f * mass * velocity.sqrMagnitude;
       
       // v = d/t  t = d/v
-      float time = distance/speed;
 
       // netForce = Vector3.zero;
 

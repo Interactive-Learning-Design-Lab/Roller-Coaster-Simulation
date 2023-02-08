@@ -10,11 +10,16 @@ public class Flag : MonoBehaviour
 
   public Vector3 acceleration;
   public Vector3 velocity;
-  public float pe;
-  public float ke;
+  public float PE;
+  public float KE;
+  public float TE;
 
-  public Text velText;
-  public Text accText;
+  public Text velocityText;
+  public Text accelerationText;
+  public Text PEText;
+  public Text KEText;
+  public Text TEText;
+
   static GameObject selected;
   // Drag & pan helper vars
   Plane dragPlane;
@@ -35,8 +40,11 @@ public class Flag : MonoBehaviour
   {
     flagColor = Color.HSVToRGB((++colorIndex % 12f) / 12f, .7f, .9f);
     GetComponent<SpriteRenderer>().color = flagColor;
-    velText = GameObject.Find("Flag Velocity").GetComponent<Text>();
-    accText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
+    velocityText = GameObject.Find("Flag Velocity").GetComponent<Text>();
+    accelerationText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
+    KEText = GameObject.Find("Flag KE").GetComponent<Text>();
+    PEText = GameObject.Find("Flag PE").GetComponent<Text>();
+    TEText = GameObject.Find("Flag TE").GetComponent<Text>();
 
     cart = GameObject.Find("Cart").transform;
 
@@ -57,15 +65,21 @@ public class Flag : MonoBehaviour
       closest = cart.position;
       acceleration = cartScript.acceleration;
       velocity = cartScript.velocity;
-      // pe = cart.pe;
+      PE = cartScript.PE;
+      KE = cartScript.KE;
+      TE = cartScript.TE;
+
       smallestDistance = Vector3.SqrMagnitude(transform.position - cart.position);
-      // ke = cart.ke;
+
 
 
     }
     if(selected == gameObject) {
-      velText.text = "Velocity: " + velocity.magnitude;
-      accText.text = "Acceleration: " + acceleration.magnitude;
+      velocityText.text = "Velocity: " + velocity.magnitude.ToString("F2") + " m/s";
+      accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
+      KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
+      PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";
+      TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
     }
   }
 

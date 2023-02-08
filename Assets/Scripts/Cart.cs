@@ -52,6 +52,21 @@ public class Cart : MonoBehaviour
     paused = true;
   }
 
+  public void StepSim()
+  {
+    StartCoroutine(StepCoroutine());
+    
+  }
+
+  IEnumerator StepCoroutine()
+  {
+    StartSim();
+
+    yield return new WaitForSeconds(0.01f);
+    PauseSim();
+
+  }
+
   public void RestartSim()
   {
     transform.position = track.trackPoints[0];

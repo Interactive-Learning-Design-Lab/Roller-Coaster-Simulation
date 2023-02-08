@@ -104,4 +104,19 @@ public class Flag : MonoBehaviour
 
   }
 
+  void OnMouseOver()
+  {
+    if(Input.GetMouseButtonDown(1)){
+      if (selected == gameObject){
+        selected = null;
+        velocityText.text = "Velocity: ";
+        accelerationText.text = "Acceleration: ";
+        KEText.text = "Kinetic Energy: ";
+        PEText.text = "Potential Energy: ";
+        TEText.text = "Total Energy: ";
+      }
+      
+      Destroy(gameObject);
+    }
+  }
 }

@@ -97,12 +97,12 @@ public class Cart : MonoBehaviour
   // Update is called once per frame
   void FixedUpdate()
   {
-    velocityText.text = "Velocity:\n" + velocity.magnitude.ToString("F2") + " m/s";
-    accelerationText.text = "Acceleration:\n" + acceleration.magnitude.ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy:\n" + KE.ToString("F2") + " j";
-    PEText.text = "Potential Energy:\n" + PE.ToString("F2") + " j";
-    TEText.text = "Total Energy:\n" + TE.ToString("F2") + " j";
-    RAText.text = "Initial Drop:\n" + releaseHeight.ToString("F2") + " m";
+    velocityText.text = "Velocity: " + velocity.magnitude.ToString("F2") + " m/s";
+    accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
+    KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
+    PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";
+    TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
+    RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
 
     // for (int i = 0; i < 1 && track.trackPoints.Count > 0; i++)
     if (!paused && track.trackPoints.Count > 0)

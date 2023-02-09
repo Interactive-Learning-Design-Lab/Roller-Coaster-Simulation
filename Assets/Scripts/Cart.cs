@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Cart : MonoBehaviour
 {
+  SpriteRenderer sr;
   [SerializeField]
   public bool paused = false;
 
@@ -78,14 +79,20 @@ public class Cart : MonoBehaviour
     vel = 0f;
     acceleration = Vector3.zero;
     accel = 0f;
-    pauseButton.SetActive(true);
-    startButton.SetActive(false);
-    paused = false;
+    PauseSim();
     GameObject[] flags = GameObject.FindGameObjectsWithTag("Flag");
     foreach (GameObject flag in flags)
     {
       flag.GetComponent<Flag>().Reset();
     }
+  }
+
+  public void Hide() {
+    sr.enabled = false;
+  }
+
+  public void Show() {
+    sr.enabled = true;
   }
 
   public void SetMass(float mass)
@@ -101,6 +108,7 @@ public class Cart : MonoBehaviour
     // RestartSim();
     // PauseSim();
 
+    sr.GetComponent<SpriteRenderer>();
     velocityText = GameObject.Find("Velocity").GetComponent<Text>();
     accelerationText = GameObject.Find("Acceleration").GetComponent<Text>();
     KEText = GameObject.Find("KE").GetComponent<Text>();

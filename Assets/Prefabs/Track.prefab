@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9182521513753671793}
   - component: {fileID: 9182521513753671792}
   - component: {fileID: 9182521513753671795}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Track
   m_TagString: Track
   m_Icon: {fileID: 0}
@@ -151,6 +151,10 @@ MonoBehaviour:
   width: 1
   height: 1
   type: 0
+  heightText: {fileID: 0}
+  widthText: {fileID: 0}
+  typeDropdown: {fileID: 0}
+  editMenu: {fileID: 0}
 --- !u!120 &9182521513753671792
 LineRenderer:
   m_ObjectHideFlags: 0

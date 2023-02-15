@@ -4878,7 +4878,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1026429829}
   - component: {fileID: 1026429828}
-  - component: {fileID: 1026429827}
   - component: {fileID: 1026429826}
   m_Layer: 0
   m_Name: Main Camera (1)
@@ -4902,14 +4901,6 @@ MonoBehaviour:
   minZoom: 1
   maxZoom: 20
   sensitivity: 2
---- !u!81 &1026429827
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026429825}
-  m_Enabled: 1
 --- !u!20 &1026429828
 Camera:
   m_ObjectHideFlags: 0
@@ -8477,6 +8468,9 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   vel: 0
   releaseHeight: 0
+  tooHigh: 1
+  positiveVel: 1
+  waiting: 0
   onTrack: 0
   tolerance: 0.1
 --- !u!1 &1684749530

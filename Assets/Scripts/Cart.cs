@@ -73,6 +73,7 @@ public class Cart : MonoBehaviour
   public void RestartSim()
   {
     transform.position = track.trackPoints[0];
+    GameObject.Find("Wall").transform.position = track.trackPoints[track.trackPoints.Count - 1];
     releaseHeight = transform.position.y;
     TE = mass * 9.81f * releaseHeight;
     velocity = Vector3.zero;
@@ -88,10 +89,12 @@ public class Cart : MonoBehaviour
   }
 
   public void Hide() {
+    GameObject.Find("Wall").GetComponent<SpriteRenderer>().enabled = false;
     sr.enabled = false;
   }
 
   public void Show() {
+    GameObject.Find("Wall").GetComponent<SpriteRenderer>().enabled = true;
     sr.enabled = true;
   }
 

@@ -81,22 +81,29 @@ public class Cart : MonoBehaviour
 
   public void RestartSim()
   {
-    waiting = false;
-    tooHigh = true;
-    positiveVel = true;
-    transform.position = track.trackPoints[0];
-    GameObject.Find("Wall").transform.position = track.trackPoints[track.trackPoints.Count - 1];
-    releaseHeight = transform.position.y;
-    TE = mass * 9.81f * releaseHeight + 0.02f;
-    velocity = Vector3.zero;
-    vel = 0f;
-    acceleration = Vector3.zero;
-    accel = 0f;
-    PauseSim();
-    GameObject[] flags = GameObject.FindGameObjectsWithTag("Flag");
-    foreach (GameObject flag in flags)
+    if (track.trackPoints.Count > 0)
     {
-      flag.GetComponent<Flag>().Reset();
+      waiting = false;
+      deltaTime = 0;
+      duration = 0;
+      final = null;
+      waiting = false;
+      tooHigh = true;
+      positiveVel = true;
+      transform.position = track.trackPoints[0];
+      GameObject.Find("Wall").transform.position = track.trackPoints[track.trackPoints.Count - 1];
+      releaseHeight = transform.position.y;
+      TE = mass * 9.81f * releaseHeight + 0.0001f;
+      velocity = Vector3.zero;
+      vel = 0f;
+      acceleration = Vector3.zero;
+      accel = 0f;
+      PauseSim();
+      GameObject[] flags = GameObject.FindGameObjectsWithTag("Flag");
+      foreach (GameObject flag in flags)
+      {
+        flag.GetComponent<Flag>().Reset();
+      }
     }
   }
 
@@ -150,72 +157,75 @@ public class Cart : MonoBehaviour
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
 
     for (int i = 0; i < 10; i++)
-    {if (!paused && track.trackPoints.Count > 0)
     {
-      // get rotation
-      float theta = track.GetClosestPointSlope(transform.position);
-      transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
-
-      if (deltaTime <= 0)
+      if (!paused && track.trackPoints.Count > 0)
       {
-        if (final != null) {
-          transform.position = (Vector3) final;
-        }
-        // get prev, current, and next point
-        Vector3[] closestPoints = track.GetClosestPoints(transform.position);
-        Vector3 currentPoint = closestPoints[1];
+        // get rotation
+        float theta = track.GetClosestPointSlope(transform.position);
+        transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
 
-        // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
-        if (transform.position.y >= releaseHeight && !tooHigh)
+        if (deltaTime <= 0)
         {
-          tooHigh = true;
-          positiveVel = !positiveVel;
-        }
-        if (transform.position.y < releaseHeight && tooHigh)
-        {
-          tooHigh = false;
+          if (final != null)
+          {
+            transform.position = (Vector3)final;
+          }
+          // get prev, current, and next point
+          Vector3[] closestPoints = track.GetClosestPoints(transform.position);
+          Vector3 currentPoint = closestPoints[1];
+
+          // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
+          if (transform.position.y >= releaseHeight && !tooHigh)
+          {
+            tooHigh = true;
+            positiveVel = !positiveVel;
+          }
+          if (transform.position.y < releaseHeight && tooHigh)
+          {
+            tooHigh = false;
+          }
+
+          // find the time it takes to get to the next point
+          if (positiveVel)
+          {
+            final = closestPoints[2];
+            // transform.position += vel * Vector3.Normalize(closestPoints[2] - closestPoints[0]) * Time.fixedDeltaTime;
+          }
+          else
+          {
+            final = closestPoints[0];
+            // transform.position -= vel * Vector3.Normalize(closestPoints[2] - closestPoints[0]) * Time.fixedDeltaTime;
+          }
+          
+          // calculate speed from kinetic energy
+          PE = mass * 9.81f * transform.position.y;
+          KE = Mathf.Abs(TE - PE);
+          vel = Mathf.Sqrt((2 * KE) / mass);
+
+          initial = closestPoints[1];
+
+          deltaTime = Vector3.Magnitude((Vector3)final - initial) / vel * 20f;
+          duration = deltaTime;
+          Debug.Log("Calculated");
         }
 
-        // calculate speed from kinetic energy
-        PE = mass * 9.81f * transform.position.y;
-        KE = Mathf.Abs(TE - PE);
-        vel = Mathf.Sqrt((2 * KE) / mass);
-
-        initial = closestPoints[1];
-
-        // find the time it takes to get to the next point
-        if (positiveVel)
-        {
-          final = closestPoints[2];
-          // transform.position += vel * Vector3.Normalize(closestPoints[2] - closestPoints[0]) * Time.fixedDeltaTime;
-        }
-        else
-        {
-          final = closestPoints[0];
-          // transform.position -= vel * Vector3.Normalize(closestPoints[2] - closestPoints[0]) * Time.fixedDeltaTime;
-        }
-
-        deltaTime = Vector3.Magnitude((Vector3) final - initial) / vel * 20f;
-        duration = deltaTime;
-        Debug.Log("Calculated");
+        Debug.Log("Initial: " + initial + "\nFinal: " + final);
+        Debug.Log("dT: " + deltaTime + "\nT: " + duration);
+        transform.position = Vector3.Lerp(initial, (Vector3)final, Time.deltaTime / duration);
+        deltaTime -= Time.deltaTime;
+        // if ((Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f && positiveVel) || 
+        //     (Vector3.SqrMagnitude(closestPoints[0] - closestPoints[1]) < 0.0001f && !positiveVel))
+        // {
+        //   velocity = Vector3.zero;
+        //   acceleration = Vector3.zero;
+        //   accel = 0;
+        // }
       }
-
-      Debug.Log("Initial: " + initial + "\nFinal: " + final);
-      Debug.Log("dT: " + deltaTime + "\nT: " + duration);
-      transform.position = Vector3.Lerp(initial, (Vector3) final, Time.deltaTime / duration);
-      deltaTime -= Time.deltaTime;
-      // if ((Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f && positiveVel) || 
-      //     (Vector3.SqrMagnitude(closestPoints[0] - closestPoints[1]) < 0.0001f && !positiveVel))
-      // {
-      //   velocity = Vector3.zero;
-      //   acceleration = Vector3.zero;
-      //   accel = 0;
-      // }
+      else if (!paused)
+      {
+        velocity = Vector3.zero;
+        acceleration = Vector3.zero;
+      }
     }
-    else if (!paused)
-    {
-      velocity = Vector3.zero;
-      acceleration = Vector3.zero;
-    }}
   }
 }

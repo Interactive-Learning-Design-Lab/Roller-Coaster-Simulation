@@ -61,15 +61,18 @@ public class TrackManager : MonoBehaviour
 
   public void CreateTrack()
   {
-    float w = float.Parse(width);
-    float h = float.Parse(height);
-
-    if (w > 0 && h > 0)
+    if (GameObject.Find("Cart").GetComponent<Cart>().paused)
     {
-      Track newTrack = Instantiate(trackPrefab, Vector3.zero, Quaternion.identity).GetComponent<Track>();
-      newTrack.setProperties(w, h, (TrackType)type);
-      UpdateTracks();
+      float w = float.Parse(width);
+      float h = float.Parse(height);
 
+      if (w > 0 && h > 0)
+      {
+        Track newTrack = Instantiate(trackPrefab, Vector3.zero, Quaternion.identity).GetComponent<Track>();
+        newTrack.setProperties(w, h, (TrackType)type);
+        UpdateTracks();
+
+      }
     }
   }
 
@@ -267,7 +270,7 @@ public class TrackManager : MonoBehaviour
 
         if (Vector3.SqrMagnitude(head - tail) > 0.1f)
         {
-          Debug.LogError("Tracks too far apart");
+          // Debug.LogError("Tracks too far apart");
           GetInstance().trackPoints = new List<Vector3>();
           GameObject.Find("Cart").GetComponent<Cart>().Hide();
           break;
@@ -275,7 +278,7 @@ public class TrackManager : MonoBehaviour
 
         if (head.x <= tail.x)
         {
-          Debug.LogError("Tracks cannot coincide");
+          // Debug.LogError("Tracks cannot coincide");
           GetInstance().trackPoints = new List<Vector3>();
           GameObject.Find("Cart").GetComponent<Cart>().Hide();
           break;

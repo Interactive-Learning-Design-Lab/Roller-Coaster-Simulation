@@ -22,7 +22,10 @@ public class Cart : MonoBehaviour
   public Vector3 velocity = new Vector3(1f, 0);
   public float vel;
   public float releaseHeight;
-
+  [SerializeField]
+  bool tooHigh = true;
+  [SerializeField]
+  bool positiveVel = true;
 
   Text velocityText;
   Text accelerationText;
@@ -58,7 +61,7 @@ public class Cart : MonoBehaviour
   public void StepSim()
   {
     StartCoroutine(StepCoroutine());
-    
+
   }
 
   IEnumerator StepCoroutine()
@@ -72,10 +75,12 @@ public class Cart : MonoBehaviour
 
   public void RestartSim()
   {
+    tooHigh = true;
+    positiveVel = true;
     transform.position = track.trackPoints[0];
     GameObject.Find("Wall").transform.position = track.trackPoints[track.trackPoints.Count - 1];
     releaseHeight = transform.position.y;
-    TE = mass * 9.81f * releaseHeight;
+    TE = mass * 9.81f * releaseHeight + 0.02f;
     velocity = Vector3.zero;
     vel = 0f;
     acceleration = Vector3.zero;
@@ -88,12 +93,14 @@ public class Cart : MonoBehaviour
     }
   }
 
-  public void Hide() {
+  public void Hide()
+  {
     GameObject.Find("Wall").GetComponent<SpriteRenderer>().enabled = false;
     sr.enabled = false;
   }
 
-  public void Show() {
+  public void Show()
+  {
     GameObject.Find("Wall").GetComponent<SpriteRenderer>().enabled = true;
     sr.enabled = true;
   }
@@ -121,7 +128,7 @@ public class Cart : MonoBehaviour
     Time.timeScale = 1f;
     track = GameObject.FindGameObjectWithTag("Track Manager").GetComponent<TrackManager>();
     if (track.trackPoints.Count > 0)
-    transform.position = track.trackPoints[0];
+      transform.position = track.trackPoints[0];
     PauseSim();
   }
 
@@ -135,78 +142,50 @@ public class Cart : MonoBehaviour
     TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
 
-    // for (int i = 0; i < 1 && track.trackPoints.Count > 0; i++)
     if (!paused && track.trackPoints.Count > 0)
     {
-
-float KE_Previous = KE;
+      // get rotation
       float theta = track.GetClosestPointSlope(transform.position);
-            transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
-            Debug.Log("transform.rotation");
-            Debug.Log(transform.rotation);
+      transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
 
+      // get prev, current, and next point
       Vector3[] closestPoints = track.GetClosestPoints(transform.position);
-      //Debug.Log((closestPoints[2]-closestPoints[0]).ToString());
       Vector3 currentPoint = closestPoints[1];
-      netForce = Vector3.zero;
-      Vector3 weight = mass * gravity * Vector3.down;
-      Debug.Log("weight.ToString()");
-      //Debug.Log(weight[1]);
-      Vector3 weightAlongAxis = weight* Mathf.Sin(theta)*100000;
-      Debug.Log("weightAlongAxis");
-      Debug.Log((weightAlongAxis/mass).ToString());
 
-      netForce += weight;
-      //Debug.DrawRay(transform.position, weight * 100, Color.blue); // weight: blue
+      // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
+      if (transform.position.y >= releaseHeight && !tooHigh)
+      {
+        tooHigh = true;
+        positiveVel = !positiveVel;
+      }
+      if (transform.position.y < releaseHeight && tooHigh)
+      {
+        tooHigh = false;
+      }
 
-      Vector3 normalForce = weight.magnitude * Mathf.Cos(theta) * -transform.up;
-      netForce += normalForce;
-      //Debug.DrawRay(transform.position, normalForce * 100, Color.red); // normal: red
-      //Debug.DrawRay(transform.position, netForce * 100, Color.white);
+      // calculate speed from kinetic energy
+      PE = mass * 9.81f * transform.position.y;
+      KE = Mathf.Abs(TE - PE);
+      vel = Mathf.Sqrt((2 * KE) / mass);
 
-      // apply forces
-      acceleration = (1/mass)*netForce;
-      //Debug.DrawRay(transform.position, acceleration * 100, Color.cyan);
+      if (positiveVel)
+      {
+        transform.position += vel * Vector3.Normalize(closestPoints[2] - closestPoints[0]) * Time.fixedDeltaTime;
+      }
+      else
+      {
+        transform.position -= vel * Vector3.Normalize(closestPoints[2] - closestPoints[0]) * Time.fixedDeltaTime;
+      }
 
-      velocity += acceleration.magnitude * Mathf.Sin(theta) * transform.right;
-      //Debug.DrawRay(transform.position, velocity * 100000000, Color.blue);
-      if (Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f)
+
+      if ((Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f && positiveVel) || 
+          (Vector3.SqrMagnitude(closestPoints[0] - closestPoints[1]) < 0.0001f && !positiveVel))
       {
         velocity = Vector3.zero;
         acceleration = Vector3.zero;
         accel = 0;
       }
-      transform.position += velocity.magnitude * Vector3.Normalize(closestPoints[2] - closestPoints[0]);// * Time.fixedDeltaTime;
-      //Debug.Log(theta);
 
-      PE = mass * 9.81f * transform.position.y;
-      KE = TE-PE; // 0.5f * mass * velocity.sqrMagnitude;
-      vel = Mathf.Sqrt((2*KE)/mass);
-      float WorkDone = KE-KE_Previous;
-      Vector3 positiondiff = closestPoints[2]-closestPoints[1];
-      accel = WorkDone/(positiondiff.magnitude*mass);
-      Debug.Log("accel");
-      Debug.Log(accel);
-
-      // Vector3[]? closest = null;
-      // int k = 10;
-      // for (int j = 0; j < k; j++)
-      // {
-      //   closest = track.GetClosestPoints(transform.position);
-      //   transform.position = Vector3.MoveTowards(transform.position, closest[2], velocity.magnitude * 1 / k * Time.fixedDeltaTime);
-      //   closest = track.GetClosestPoints(transform.position);
-
-      // }
-
-
-      // if (closest != null && Vector3.SqrMagnitude(closest[1] - currentPoint) > 0.0001f
-      // && Vector3.SqrMagnitude(closest[1] - transform.position) < tolerance)
-      // {
-      //   transform.position = closest[1];
-      //   Debug.Log("teleported");
-      // }
-      // // Quaternion.Euler(0, 0, -theta) * Vector3.right * Vector3.Magnitude(velocity);
-      // Debug.DrawRay(transform.position, Quaternion.Euler(0, 0, -theta) * Vector3.right * Vector3.Magnitude(velocity));
 
 
     }

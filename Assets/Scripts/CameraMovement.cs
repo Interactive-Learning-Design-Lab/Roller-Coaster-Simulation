@@ -5,6 +5,8 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
 
+
+  static bool enableZoom = false;
   [SerializeField]
   float minZoom = 1f;
   [SerializeField]
@@ -32,7 +34,7 @@ public class CameraMovement : MonoBehaviour
 
   void Update()
   {
-    if (Input.GetAxis("Mouse ScrollWheel") != 0)
+    if (Input.GetAxis("Mouse ScrollWheel") != 0 && enableZoom)
     {
       mousePositionOnScreen = mousePositionOnScreen1;
       mousePositionOnScreen1 = Input.mousePosition;

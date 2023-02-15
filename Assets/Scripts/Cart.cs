@@ -108,7 +108,7 @@ public class Cart : MonoBehaviour
     // RestartSim();
     // PauseSim();
 
-    sr.GetComponent<SpriteRenderer>();
+    sr = GetComponent<SpriteRenderer>();
     velocityText = GameObject.Find("Velocity").GetComponent<Text>();
     accelerationText = GameObject.Find("Acceleration").GetComponent<Text>();
     KEText = GameObject.Find("KE").GetComponent<Text>();
@@ -117,6 +117,7 @@ public class Cart : MonoBehaviour
     RAText = GameObject.Find("RA").GetComponent<Text>();
     Time.timeScale = 1f;
     track = GameObject.FindGameObjectWithTag("Track Manager").GetComponent<TrackManager>();
+    if (track.trackPoints.Count > 0)
     transform.position = track.trackPoints[0];
     PauseSim();
   }

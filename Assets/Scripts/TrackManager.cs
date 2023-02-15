@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TrackManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class TrackManager : MonoBehaviour
   public GameObject trackPrefab;
   public GameObject flagPrefab;
   private static TrackManager _instance;
+  Text widthText;
+  Text heightText;
 
   Vector3[] closestPoints;
   // float lastCached = -1f;
@@ -45,19 +48,21 @@ public class TrackManager : MonoBehaviour
   public void SetHeight(float _height)
   {
     height = _height + "";
+    heightText.text = "Height: " + _height.ToString("F2") + " m";
     EditTrack();
   }
 
   public void setWidth(float _width)
   {
     width = _width + "";
+    widthText.text = "Width: " + _width.ToString("F2") + " m";
     EditTrack();
   }
 
   public void CreateTrack()
   {
-  float w = float.Parse(width);
-  float h = float.Parse(height);
+    float w = float.Parse(width);
+    float h = float.Parse(height);
 
     if (w > 0 && h > 0)
     {
@@ -72,8 +77,8 @@ public class TrackManager : MonoBehaviour
   {
     if (selected != null)
     {
-    float w = float.Parse(width);
-    float h = float.Parse(height);
+      float w = float.Parse(width);
+      float h = float.Parse(height);
 
       if (w > 0 && h > 0)
       {
@@ -85,7 +90,8 @@ public class TrackManager : MonoBehaviour
     }
   }
 
-  public void AddFlag() {
+  public void AddFlag()
+  {
     Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x, 1, -3), Quaternion.identity);
   }
 
@@ -162,7 +168,7 @@ public class TrackManager : MonoBehaviour
     // }
     // else
     //{
-      closest = GetClosestPoints(position);
+    closest = GetClosestPoints(position);
     //}
 
     Vector3 delta = closest[2] - closest[1];
@@ -172,6 +178,8 @@ public class TrackManager : MonoBehaviour
   void Start()
   {
     lineRenderer = GetComponent<LineRenderer>();
+    heightText = GameObject.Find("HText").GetComponent<Text>();
+    widthText = GameObject.Find("WText").GetComponent<Text>();
     _instance = this;
     UpdateTracks();
 
@@ -192,7 +200,7 @@ public class TrackManager : MonoBehaviour
     // Debug.Log(GetInstance().trackPoints.Count);
     GetInstance().lineRenderer.positionCount = GetInstance().trackPoints.Count;
     GetInstance().lineRenderer.SetPositions(GetInstance().trackPoints.ToArray());
-    
+
     GameObject.Find("Cart").GetComponent<Cart>().RestartSim();
   }
 
@@ -257,26 +265,31 @@ public class TrackManager : MonoBehaviour
         LineRenderer tailTrack = tracks[i - 1].GetComponent<LineRenderer>();
         Vector3 tail = tailTrack.GetPosition(tailTrack.positionCount - 1);
 
-        if(Vector3.SqrMagnitude(head - tail) > 0.1f) {
+        if (Vector3.SqrMagnitude(head - tail) > 0.1f)
+        {
           Debug.LogError("Tracks too far apart");
           GetInstance().trackPoints = new List<Vector3>();
+          GameObject.Find("Cart").GetComponent<Cart>().Hide();
           break;
         }
 
-        if (head.x <= tail.x) {
+        if (head.x <= tail.x)
+        {
           Debug.LogError("Tracks cannot coincide");
           GetInstance().trackPoints = new List<Vector3>();
+          GameObject.Find("Cart").GetComponent<Cart>().Hide();
           break;
         }
       }
-      
 
-        LineRenderer trackRenderer = tracks[i].GetComponent<LineRenderer>();
-        Vector3[] positions = new Vector3[trackRenderer.positionCount];
-        trackRenderer.GetPositions(positions);
 
-        GetInstance().trackPoints.AddRange(positions);
-      
+      LineRenderer trackRenderer = tracks[i].GetComponent<LineRenderer>();
+      Vector3[] positions = new Vector3[trackRenderer.positionCount];
+      trackRenderer.GetPositions(positions);
+
+      GetInstance().trackPoints.AddRange(positions);
+      GameObject.Find("Cart").GetComponent<Cart>().Show();
+
 
     }
 

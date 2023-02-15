@@ -168,8 +168,7 @@ float KE_Previous = KE;
       acceleration = (1/mass)*netForce;
       //Debug.DrawRay(transform.position, acceleration * 100, Color.cyan);
 
-      float direction = Vector3.Dot(Mathf.Sin(theta) * transform.right, closestPoints[0] - closestPoints[2]);
-      velocity += acceleration.magnitude * Mathf.Sin(theta) * transform.right * Mathf.Sign(direction);
+      velocity += acceleration.magnitude * Mathf.Sin(theta) * transform.right;
       //Debug.DrawRay(transform.position, velocity * 100000000, Color.blue);
       if (Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f)
       {
@@ -177,7 +176,7 @@ float KE_Previous = KE;
         acceleration = Vector3.zero;
         accel = 0;
       }
-      transform.position += velocity;// * Time.fixedDeltaTime;
+      transform.position += velocity.magnitude * Vector3.Normalize(closestPoints[2] - closestPoints[0]);// * Time.fixedDeltaTime;
       //Debug.Log(theta);
 
       PE = mass * 9.81f * transform.position.y;

@@ -9,7 +9,7 @@ public class Flag : MonoBehaviour
   float smallestDistance = float.PositiveInfinity;
 
   public Vector3 acceleration;
-  public Vector3 velocity;
+  public float velocity;
   public float PE;
   public float KE;
   public float TE;
@@ -64,7 +64,7 @@ public class Flag : MonoBehaviour
       
       closest = cart.position;
       acceleration = cartScript.acceleration;
-      velocity = cartScript.velocity;
+      velocity = cartScript.vel;
       PE = cartScript.PE;
       KE = cartScript.KE;
       TE = cartScript.TE;
@@ -75,7 +75,7 @@ public class Flag : MonoBehaviour
 
     }
     if(selected == gameObject) {
-      velocityText.text = "Velocity: " + velocity.magnitude.ToString("F2") + " m/s";
+      velocityText.text = "Velocity: " + velocity.ToString("F2") + " m/s";
       accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
       KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
       PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";

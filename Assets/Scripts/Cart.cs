@@ -32,6 +32,7 @@ public class Cart : MonoBehaviour
   float duration = 0;
   Vector3 initial;
   Vector3? final = null;
+  float lastValidVel;
 
   Text velocityText;
   Text accelerationText;
@@ -139,7 +140,7 @@ public class Cart : MonoBehaviour
     PEText = GameObject.Find("PE").GetComponent<Text>();
     TEText = GameObject.Find("TE").GetComponent<Text>();
     RAText = GameObject.Find("RA").GetComponent<Text>();
-    Time.timeScale = 1f;
+    Time.timeScale = 4f;
     track = GameObject.FindGameObjectWithTag("Track Manager").GetComponent<TrackManager>();
     if (track.trackPoints.Count > 0)
       transform.position = track.trackPoints[0];
@@ -149,14 +150,14 @@ public class Cart : MonoBehaviour
   // Update is called once per frame
   void FixedUpdate()
   {
-    velocityText.text = "Velocity: " + velocity.magnitude.ToString("F2") + " m/s";
+    velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
     accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
     KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
     PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";
     TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
     {
       if (!paused && track.trackPoints.Count > 0)
       {
@@ -175,12 +176,12 @@ public class Cart : MonoBehaviour
           Vector3 currentPoint = closestPoints[1];
 
           // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
-          if (transform.position.y >= releaseHeight && !tooHigh)
+          if (transform.position.y + 0.001f >= releaseHeight && !tooHigh)
           {
             tooHigh = true;
             positiveVel = !positiveVel;
           }
-          if (transform.position.y < releaseHeight && tooHigh)
+          if (transform.position.y + 0.001f < releaseHeight && tooHigh)
           {
             tooHigh = false;
           }
@@ -199,19 +200,29 @@ public class Cart : MonoBehaviour
           
           // calculate speed from kinetic energy
           PE = mass * 9.81f * transform.position.y;
-          KE = Mathf.Abs(TE - PE);
-          vel = Mathf.Sqrt((2 * KE) / mass);
+          if (PE > TE) {
+            tooHigh = true;
+            vel = lastValidVel;
+            final = initial;
+          } else {
+            KE = TE - PE;
+            vel = Mathf.Sqrt((2 * KE) / mass);
+
+          }
+          lastValidVel = vel;
 
           initial = closestPoints[1];
 
-          deltaTime = Vector3.Magnitude((Vector3)final - initial) / vel * 20f;
+          deltaTime = Vector3.Magnitude((Vector3)final - initial) / vel * 4f;
           duration = deltaTime;
           Debug.Log("Calculated");
         }
 
         Debug.Log("Initial: " + initial + "\nFinal: " + final);
         Debug.Log("dT: " + deltaTime + "\nT: " + duration);
-        transform.position = Vector3.Lerp(initial, (Vector3)final, Time.deltaTime / duration);
+        Vector3 target = Vector3.Lerp(initial, (Vector3)final, Time.deltaTime / duration);
+        if (target.y < releaseHeight)
+        transform.position = target;
         deltaTime -= Time.deltaTime;
         // if ((Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f && positiveVel) || 
         //     (Vector3.SqrMagnitude(closestPoints[0] - closestPoints[1]) < 0.0001f && !positiveVel))

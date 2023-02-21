@@ -12,7 +12,8 @@ public class Cart : MonoBehaviour
   public float mass = 1f;
 
   float gravity = 0.00001f * 9.81f;
-
+  public bool slowDown = false;
+  public float friction = 1f;
   public float KE;
   public float PE;
   public float TE;
@@ -84,6 +85,8 @@ public class Cart : MonoBehaviour
   {
     if (track.trackPoints.Count > 0)
     {
+      friction = 1;
+      slowDown = false;
       waiting = false;
       deltaTime = 0;
       duration = 0;
@@ -150,6 +153,7 @@ public class Cart : MonoBehaviour
   // Update is called once per frame
   void FixedUpdate()
   {
+
     velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
     accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
     KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
@@ -157,10 +161,14 @@ public class Cart : MonoBehaviour
     TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
 
+
     for (int i = 0; i < 10; i++)
     {
-      if (!paused && track.trackPoints.Count > 0)
+      if (!paused && track.trackPoints.Count > 0 && (!slowDown || vel > 0.25f))
       {
+        if(transform.position.x > track.trackPoints[track.trackPoints.Count - 30].x) {
+          slowDown = true;
+        }
         // get rotation
         float theta = track.GetClosestPointSlope(transform.position);
         transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
@@ -186,44 +194,50 @@ public class Cart : MonoBehaviour
             tooHigh = false;
           }
 
-          // find the time it takes to get to the next point
+          // choose the next point
           if (positiveVel)
           {
             final = closestPoints[2];
-            // transform.position += vel * Vector3.Normalize(closestPoints[2] - closestPoints[0]) * Time.fixedDeltaTime;
           }
           else
           {
             final = closestPoints[0];
-            // transform.position -= vel * Vector3.Normalize(closestPoints[2] - closestPoints[0]) * Time.fixedDeltaTime;
           }
           
+          
+          if (slowDown){
+            friction = friction * (1 - 0.08f);
           // calculate speed from kinetic energy
-          PE = mass * 9.81f * transform.position.y;
+          // PE = mass * 9.81f * transform.position.y * friction;
+          // TE *= 1 - (0.99f * Time.fixedDeltaTime);
+          }
+          
+          PE = mass * 9.81f * transform.position.y;// * friction;
           if (PE > TE) {
             tooHigh = true;
             vel = lastValidVel;
             final = initial;
           } else {
             KE = TE - PE;
-            vel = Mathf.Sqrt((2 * KE) / mass);
-
+            vel = Mathf.Sqrt((2 * KE) / mass) * friction*friction;
+            if (slowDown)
+              KE = 0.5f * mass * vel * vel;
           }
+          
           lastValidVel = vel;
 
           initial = closestPoints[1];
 
-          deltaTime = Vector3.Magnitude((Vector3)final - initial) / vel *50f;
+          // find the time it takes to get to the next point
+          deltaTime = Vector3.Magnitude((Vector3)final - initial) / vel * 50f ;
           duration = deltaTime;
-          Debug.Log("Calculated");
         }
 
-        Debug.Log("Initial: " + initial + "\nFinal: " + final);
-        Debug.Log("dT: " + deltaTime + "\nT: " + duration);
-        Vector3 target = Vector3.Lerp(initial, (Vector3)final, Time.deltaTime / duration);
+        
+        Vector3 target = Vector3.Lerp(transform.position, (Vector3)final, Time.fixedDeltaTime / duration);
         if (target.y < releaseHeight)
         transform.position = target;
-        deltaTime -= Time.deltaTime;
+        deltaTime -= Time.fixedDeltaTime;
         // if ((Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f && positiveVel) || 
         //     (Vector3.SqrMagnitude(closestPoints[0] - closestPoints[1]) < 0.0001f && !positiveVel))
         // {
@@ -234,8 +248,8 @@ public class Cart : MonoBehaviour
       }
       else if (!paused)
       {
-        velocity = Vector3.zero;
-        acceleration = Vector3.zero;
+        KE = 0;
+        vel = 0;
       }
     }
   }

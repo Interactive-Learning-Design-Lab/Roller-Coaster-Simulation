@@ -303,7 +303,7 @@ public class TrackManager : MonoBehaviour
     {
       Vector3 end = points[points.Count - 1];
 
-      for (int i = 1; i < 20; i++)
+      for (int i = 1; i < 30; i++)
       {
         GetInstance().trackPoints.Add(end + new Vector3(i/20f, 0, 0));
       }

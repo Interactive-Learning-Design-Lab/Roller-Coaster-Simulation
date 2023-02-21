@@ -157,7 +157,7 @@ public class Cart : MonoBehaviour
     TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10; i++)
     {
       if (!paused && track.trackPoints.Count > 0)
       {
@@ -176,12 +176,12 @@ public class Cart : MonoBehaviour
           Vector3 currentPoint = closestPoints[1];
 
           // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
-          if (transform.position.y + 0.001f >= releaseHeight && !tooHigh)
+          if (transform.position.y + 0.007f >= releaseHeight && !tooHigh)
           {
             tooHigh = true;
             positiveVel = !positiveVel;
           }
-          if (transform.position.y + 0.001f < releaseHeight && tooHigh)
+          if (transform.position.y + 0.007f < releaseHeight && tooHigh)
           {
             tooHigh = false;
           }
@@ -213,7 +213,7 @@ public class Cart : MonoBehaviour
 
           initial = closestPoints[1];
 
-          deltaTime = Vector3.Magnitude((Vector3)final - initial) / vel * 4f;
+          deltaTime = Vector3.Magnitude((Vector3)final - initial) / vel *50f;
           duration = deltaTime;
           Debug.Log("Calculated");
         }

@@ -40,8 +40,11 @@ public class Cart : MonoBehaviour
   Text velocityText;
   Text accelerationText;
   Text KEText;
+  Slider KESlider;
   Text HEText;
+  Slider HESlider;
   Text PEText;
+  Slider PESlider;
   Text TEText;
   Text RAText;
   GameObject startButton;
@@ -147,8 +150,11 @@ public class Cart : MonoBehaviour
     velocityText = GameObject.Find("Velocity").GetComponent<Text>();
     accelerationText = GameObject.Find("Acceleration").GetComponent<Text>();
     KEText = GameObject.Find("KE").GetComponent<Text>();
+    KESlider = GameObject.Find("KESlider").GetComponent<Slider>();
     HEText = GameObject.Find("HE").GetComponent<Text>();
+    HESlider = GameObject.Find("HESlider").GetComponent<Slider>();
     PEText = GameObject.Find("PE").GetComponent<Text>();
+    PESlider = GameObject.Find("PESlider").GetComponent<Slider>();
     TEText = GameObject.Find("TE").GetComponent<Text>();
     RAText = GameObject.Find("RA").GetComponent<Text>();
     Time.timeScale = 4f;
@@ -169,6 +175,12 @@ public class Cart : MonoBehaviour
     HEText.text = "Thermal Energy: " + (HE).ToString("F2") + " j";
     TEText.text = "Total Energy: " + (initialTotal).ToString("F2") + " j";
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
+    KESlider.maxValue = initialTotal;
+    PESlider.maxValue = initialTotal;
+    HESlider.maxValue = initialTotal;
+    KESlider.value = KE;
+    PESlider.value = PE;
+    HESlider.value = HE;
 
 
     for (int i = 0; i < 1; i++)
@@ -231,15 +243,6 @@ public class Cart : MonoBehaviour
               final = closestPoints[0];
             }
 
-
-            if (slowDown)
-            {
-              friction -= friction * (1 - (mu));
-              // calculate speed from kinetic energy
-              // PE = mass * 9.81f * transform.position.y * friction;
-              // TE *= 1 - (0.99f * Time.fixedDeltaTime);
-            }
-
             PE = mass * 9.81f * transform.position.y;// * friction;
             if (PE > TE)
             {
@@ -247,12 +250,13 @@ public class Cart : MonoBehaviour
               vel = lastValidVel;
               final = initial;
               PE = TE - KE;
+              
             }
             else
             {
               KE = TE - PE;
               vel = Mathf.Sqrt((2 * KE) / mass);
-              if (slowDown)
+              if (slowDown && !tooHigh)
               {
                 TE = PE + KE - mu * Time.fixedDeltaTime;
                 HE += Time.fixedDeltaTime * mu;
@@ -264,7 +268,7 @@ public class Cart : MonoBehaviour
 
             // find the time it takes to get to the next point
             deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
-            if (q++ > 50) {PauseSim();HE += KE; KE = 0;vel = 0;break;}
+            if (q++ > 50) {Debug.Log("q>50");/* HE += KE; KE = 0;vel = 0*/;break;}
 
           }
           duration = deltaTime;
@@ -285,6 +289,7 @@ public class Cart : MonoBehaviour
       }
       else if (!paused)
       {
+        Debug.Log("q>50");
         PauseSim();
         HE += KE;
         KE = 0;

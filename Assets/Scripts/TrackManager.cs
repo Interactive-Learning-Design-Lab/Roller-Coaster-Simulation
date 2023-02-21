@@ -259,6 +259,9 @@ public class TrackManager : MonoBehaviour
     GetInstance().trackPoints = new List<Vector3>();
 
 
+    int errCount = 0;
+    bool coincide = false;
+    bool tooFar = false;
     // For each track add points to trackPoints
     for (int i = 0; i < tracks.Count; i++)
     {
@@ -270,17 +273,22 @@ public class TrackManager : MonoBehaviour
 
         if (Vector3.SqrMagnitude(head - tail) > 0.1f)
         {
-          // Debug.LogError("Tracks too far apart");
+          // Error("Tracks are too far apart");
+          tooFar = true;
           GetInstance().trackPoints = new List<Vector3>();
           GameObject.Find("Cart").GetComponent<Cart>().Hide();
+          errCount++;
           break;
         }
 
         if (head.x <= tail.x)
         {
-          // Debug.LogError("Tracks cannot coincide");
+          // Error("Tracks cannot coincide");
+          coincide = true;
           GetInstance().trackPoints = new List<Vector3>();
           GameObject.Find("Cart").GetComponent<Cart>().Hide();
+          errCount++;
+          coincide = true;
           break;
         }
       }
@@ -296,8 +304,20 @@ public class TrackManager : MonoBehaviour
 
     }
 
+    if (errCount <= 0)
+    {
+      HideError();
+    }
+    else if (coincide)
+    {
+      Error("Tracks are coinciding");
+    }
+    else if (tooFar)
+    {
+      Error("Tracks are too far apart");
+    }
 
-    
+
     List<Vector3> points = GetInstance().trackPoints;
     if (points.Count > 0)
     {
@@ -305,8 +325,21 @@ public class TrackManager : MonoBehaviour
 
       for (int i = 1; i < 30; i++)
       {
-        GetInstance().trackPoints.Add(end + new Vector3(i/20f, 0, 0));
+        GetInstance().trackPoints.Add(end + new Vector3(i / 20f, 0, 0));
       }
     }
+  }
+
+  public static void Error(string err)
+  {
+    GameObject panel = GameObject.Find("ErrorPanel");
+    panel.GetComponent<Image>().enabled = true;
+    panel.transform.GetChild(0).GetComponent<Text>().text = err;
+  }
+  public static void HideError()
+  {
+    GameObject panel = GameObject.Find("ErrorPanel");
+    panel.GetComponent<Image>().enabled = false;
+    panel.transform.GetChild(0).GetComponent<Text>().text = "";
   }
 }

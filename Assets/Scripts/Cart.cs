@@ -8,15 +8,17 @@ public class Cart : MonoBehaviour
   SpriteRenderer sr;
   [SerializeField]
   public bool paused = false;
-
+  public float mu = .8f;
   public float mass = 1f;
 
   float gravity = 0.00001f * 9.81f;
   public bool slowDown = false;
   public float friction = 1f;
+  public float initialTotal;
   public float KE;
   public float PE;
   public float TE;
+  public float HE;
   public Vector3 netForce;
   public Vector3 acceleration;
   public float accel;
@@ -38,6 +40,7 @@ public class Cart : MonoBehaviour
   Text velocityText;
   Text accelerationText;
   Text KEText;
+  Text HEText;
   Text PEText;
   Text TEText;
   Text RAText;
@@ -98,6 +101,10 @@ public class Cart : MonoBehaviour
       GameObject.Find("Wall").transform.position = track.trackPoints[track.trackPoints.Count - 1];
       releaseHeight = transform.position.y;
       TE = mass * 9.81f * releaseHeight + 0.0001f;
+      initialTotal = TE;
+      PE = TE;
+      KE = 0;
+      HE = 0;
       velocity = Vector3.zero;
       vel = 0f;
       acceleration = Vector3.zero;
@@ -140,6 +147,7 @@ public class Cart : MonoBehaviour
     velocityText = GameObject.Find("Velocity").GetComponent<Text>();
     accelerationText = GameObject.Find("Acceleration").GetComponent<Text>();
     KEText = GameObject.Find("KE").GetComponent<Text>();
+    HEText = GameObject.Find("HE").GetComponent<Text>();
     PEText = GameObject.Find("PE").GetComponent<Text>();
     TEText = GameObject.Find("TE").GetComponent<Text>();
     RAText = GameObject.Find("RA").GetComponent<Text>();
@@ -156,17 +164,20 @@ public class Cart : MonoBehaviour
 
     velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
     accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";
-    TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
+    KEText.text = "Kinetic Energy: " + (KE).ToString("F2") + " j";
+    PEText.text = "Potential Energy: " + (PE).ToString("F2") + " j";
+    HEText.text = "Thermal Energy: " + (HE).ToString("F2") + " j";
+    TEText.text = "Total Energy: " + (initialTotal).ToString("F2") + " j";
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
 
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
     {
-      if (!paused && track.trackPoints.Count > 0 && (!slowDown || vel > 0.25f))
+      if (!paused && track.trackPoints.Count > 0 && (!slowDown || vel > 0.1f))
       {
-        if(transform.position.x > track.trackPoints[track.trackPoints.Count - 30].x) {
+
+        if (transform.position.x > track.trackPoints[track.trackPoints.Count - 30].x)
+        {
           slowDown = true;
         }
         // get rotation
@@ -179,64 +190,90 @@ public class Cart : MonoBehaviour
           {
             transform.position = (Vector3)final;
           }
-          // get prev, current, and next point
-          Vector3[] closestPoints = track.GetClosestPoints(transform.position);
-          Vector3 currentPoint = closestPoints[1];
-
-          // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
-          if (transform.position.y + 0.007f >= releaseHeight && !tooHigh)
-          {
-            tooHigh = true;
-            positiveVel = !positiveVel;
-          }
-          if (transform.position.y + 0.007f < releaseHeight && tooHigh)
-          {
-            tooHigh = false;
-          }
-
-          // choose the next point
-          if (positiveVel)
-          {
-            final = closestPoints[2];
-          }
           else
           {
-            final = closestPoints[0];
+            final = transform.position;
           }
-          
-          
-          if (slowDown){
-            friction = friction * (1 - 0.08f);
-          // calculate speed from kinetic energy
-          // PE = mass * 9.81f * transform.position.y * friction;
-          // TE *= 1 - (0.99f * Time.fixedDeltaTime);
-          }
-          
-          PE = mass * 9.81f * transform.position.y;// * friction;
-          if (PE > TE) {
-            tooHigh = true;
-            vel = lastValidVel;
-            final = initial;
-          } else {
-            KE = TE - PE;
-            vel = Mathf.Sqrt((2 * KE) / mass) * friction*friction;
+
+
+          int q = 0;
+          while (deltaTime < Time.fixedDeltaTime)
+          {
+            // get prev, current, and next point
+            Vector3[] closestPoints = track.GetClosestPoints((Vector3)final);
+            if (closestPoints[1] == closestPoints[2])
+            {
+                KE = 0;
+        vel = 0;
+              PauseSim();
+              break;
+            }
+            initial = closestPoints[1];
+
+            // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
+            if (transform.position.y + 0.007f >= releaseHeight && !tooHigh)
+            {
+              tooHigh = true;
+              positiveVel = !positiveVel;
+            }
+            if (transform.position.y + 0.007f < releaseHeight && tooHigh)
+            {
+              tooHigh = false;
+            }
+
+            // choose the next point
+            if (positiveVel)
+            {
+              final = closestPoints[2];
+            }
+            else
+            {
+              final = closestPoints[0];
+            }
+
+
             if (slowDown)
-              KE = 0.5f * mass * vel * vel;
+            {
+              friction -= friction * (1 - (mu));
+              // calculate speed from kinetic energy
+              // PE = mass * 9.81f * transform.position.y * friction;
+              // TE *= 1 - (0.99f * Time.fixedDeltaTime);
+            }
+
+            PE = mass * 9.81f * transform.position.y;// * friction;
+            if (PE > TE)
+            {
+              tooHigh = true;
+              vel = lastValidVel;
+              final = initial;
+              PE = TE - KE;
+            }
+            else
+            {
+              KE = TE - PE;
+              vel = Mathf.Sqrt((2 * KE) / mass);
+              if (slowDown)
+              {
+                TE = PE + KE - mu * Time.fixedDeltaTime;
+                HE += Time.fixedDeltaTime * mu;
+              }
+            }
+
+            lastValidVel = vel;
+
+
+            // find the time it takes to get to the next point
+            deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
+            if (q++ > 50) {PauseSim();HE += KE; KE = 0;vel = 0;break;}
+
           }
-          
-          lastValidVel = vel;
-
-          initial = closestPoints[1];
-
-          // find the time it takes to get to the next point
-          deltaTime = Vector3.Magnitude((Vector3)final - initial) / vel * 50f ;
           duration = deltaTime;
         }
 
-        
+
         Vector3 target = Vector3.Lerp(transform.position, (Vector3)final, Time.fixedDeltaTime / duration);
         if (target.y < releaseHeight)
-        transform.position = target;
+          transform.position = target;
         deltaTime -= Time.fixedDeltaTime;
         // if ((Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f && positiveVel) || 
         //     (Vector3.SqrMagnitude(closestPoints[0] - closestPoints[1]) < 0.0001f && !positiveVel))
@@ -248,6 +285,8 @@ public class Cart : MonoBehaviour
       }
       else if (!paused)
       {
+        PauseSim();
+        HE += KE;
         KE = 0;
         vel = 0;
       }

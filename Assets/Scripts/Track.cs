@@ -40,8 +40,10 @@ public class Track : MonoBehaviour
   [SerializeField]
   TrackType type;
 
-  public Slider heightText;
-  public Slider widthText;
+  public Slider heightSlider;
+  public Text heightText;
+  public Slider widthSlider;
+  public Text widthText;
   public Dropdown typeDropdown;
   public GameObject editMenu;
 
@@ -73,8 +75,10 @@ public class Track : MonoBehaviour
     mainCam = Camera.main;
     hitbox = GetComponent<BoxCollider2D>();
     cart = GameObject.Find("Cart").GetComponent<Cart>();
-    heightText = GameObject.Find("Height Input").GetComponent<Slider>();
-    widthText = GameObject.Find("Width Input").GetComponent<Slider>();
+    heightSlider = GameObject.Find("Height Input").GetComponent<Slider>();
+    widthSlider = GameObject.Find("Width Input").GetComponent<Slider>();
+    heightText = GameObject.Find("HText").GetComponent<Text>();
+    widthText = GameObject.Find("WText").GetComponent<Text>();
     typeDropdown = GameObject.Find("Type").GetComponent<Dropdown>();
     editMenu = GameObject.Find("Edit Menu");
 
@@ -215,8 +219,11 @@ public class Track : MonoBehaviour
       TrackManager.width = width.ToString();
       TrackManager.type = (int)type;
 
-      heightText.value = height;
-      widthText.value = width;
+      heightSlider.value = height;
+      widthSlider.value = width;
+      heightText.text = "Height: " + height.ToString("F2") + " m";
+      widthText.text = "Width: " + width.ToString("F2") + " m";
+      
       typeDropdown.value = (int)type;
       Debug.Log(typeDropdown.value);
       Debug.Log((int)type);

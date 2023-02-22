@@ -63,6 +63,8 @@ public class Track : MonoBehaviour
   {
     points = new List<Vector3>();
     lineRenderer.positionCount = 0;
+    gameObject.tag = "Untagged";
+    TrackManager.UpdateTracks();
     Destroy(gameObject);
   }
 

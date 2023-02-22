@@ -118,6 +118,8 @@ public class Cart : MonoBehaviour
       {
         flag.GetComponent<Flag>().Reset();
       }
+      float theta = track.GetClosestPointSlope(transform.position);
+      transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
     }
   }
 
@@ -175,6 +177,11 @@ public class Cart : MonoBehaviour
     HEText.text = "Thermal Energy: " + (HE).ToString("F2") + " j";
     TEText.text = "Total Energy: " + (initialTotal).ToString("F2") + " j";
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
+    float maxVal = 0;
+    if (initialTotal >= 0.1f)
+    {
+      maxVal = initialTotal;
+    }
     KESlider.maxValue = initialTotal;
     PESlider.maxValue = initialTotal;
     HESlider.maxValue = initialTotal;
@@ -215,8 +222,8 @@ public class Cart : MonoBehaviour
             Vector3[] closestPoints = track.GetClosestPoints((Vector3)final);
             if (closestPoints[1] == closestPoints[2])
             {
-                KE = 0;
-        vel = 0;
+              KE = 0;
+              vel = 0;
               PauseSim();
               break;
             }
@@ -228,7 +235,7 @@ public class Cart : MonoBehaviour
               tooHigh = true;
               positiveVel = !positiveVel;
             }
-            if (transform.position.y + 0.007f < releaseHeight && tooHigh)
+            if (transform.position.y + 0.009f < releaseHeight && tooHigh)
             {
               tooHigh = false;
             }
@@ -242,15 +249,15 @@ public class Cart : MonoBehaviour
             {
               final = closestPoints[0];
             }
-
+            float tvel = vel;
             PE = mass * 9.81f * transform.position.y;// * friction;
             if (PE > TE)
             {
-              tooHigh = true;
+              // tooHigh = true;
               vel = lastValidVel;
               final = initial;
               PE = TE - KE;
-              
+
             }
             else
             {
@@ -258,17 +265,19 @@ public class Cart : MonoBehaviour
               vel = Mathf.Sqrt((2 * KE) / mass);
               if (slowDown && !tooHigh)
               {
-                TE = PE + KE - mu * Time.fixedDeltaTime;
-                HE += Time.fixedDeltaTime * mu;
+                TE = PE + KE - mu * vel * Time.fixedDeltaTime;
+                HE += mu * vel * Time.fixedDeltaTime;
               }
             }
 
+            Debug.Log((tvel-vel)/Time.fixedDeltaTime);
+            acceleration = Vector3.right * (tvel-vel)/Time.fixedDeltaTime;
             lastValidVel = vel;
 
 
             // find the time it takes to get to the next point
             deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
-            if (q++ > 50) {Debug.Log("q>50");/* HE += KE; KE = 0;vel = 0*/;break;}
+            if (q++ > 50) { Debug.Log("q>50");/* HE += KE; KE = 0;vel = 0*/; break; }
 
           }
           duration = deltaTime;

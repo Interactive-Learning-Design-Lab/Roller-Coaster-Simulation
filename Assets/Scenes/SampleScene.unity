@@ -9875,7 +9875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   paused: 0
-  mu: 47.77778
+  mu: 15
   mass: 1
   slowDown: 0
   friction: 1
@@ -9890,7 +9890,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   vel: 0
   releaseHeight: 0
-  tooHigh: 1
+  tooHigh: 0
   positiveVel: 1
   waiting: 0
   onTrack: 0

@@ -227,8 +227,7 @@ public class Track : MonoBehaviour
       widthText.text = "Width: " + width.ToString("F2") + " m";
       
       typeDropdown.value = (int)type;
-      Debug.Log(typeDropdown.value);
-      Debug.Log((int)type);
+
 
       dragPlane = new Plane(mainCam.transform.forward, transform.position);
       Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);

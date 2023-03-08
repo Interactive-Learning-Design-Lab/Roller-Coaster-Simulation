@@ -63,11 +63,15 @@ public class TrackManager : MonoBehaviour
   {
     if (GameObject.Find("Cart").GetComponent<Cart>().paused)
     {
+        height = GameObject.Find("New Height Input").GetComponent<InputField>().text;
+      width = GameObject.Find("New Width Input").GetComponent<InputField>().text;
+      type = GameObject.Find("New Type").GetComponent<Dropdown>().value;
       float w = float.Parse(width);
       float h = float.Parse(height);
 
       if (w > 0 && h > 0)
       {
+
         Track newTrack = Instantiate(trackPrefab, Vector3.zero, Quaternion.identity).GetComponent<Track>();
         newTrack.setProperties(w, h, (TrackType)type);
         UpdateTracks();
@@ -80,6 +84,10 @@ public class TrackManager : MonoBehaviour
   {
     if (selected != null)
     {
+      // height = GameObject.Find("Height Input").GetComponent<Slider>().value.ToString("F2");
+      // width = GameObject.Find("Width Input").GetComponent<Slider>().value.ToString("F2");
+      // type = GameObject.Find("Type").GetComponent<Dropdown>().value;
+
       float w = float.Parse(width);
       float h = float.Parse(height);
 
@@ -220,7 +228,7 @@ public class TrackManager : MonoBehaviour
     // Find all tracks in scene
     List<GameObject> tracks = new List<GameObject>(GameObject.FindGameObjectsWithTag("Track"));
     tracks.Sort((x, y) => x.transform.position.x.CompareTo(y.transform.position.x));
-    Debug.Log(tracks.Count);
+
 
 
     for (int i = 1; i < tracks.Count; i++)

@@ -21,8 +21,7 @@ public class Flag : MonoBehaviour
   public Text KEText;
   public Text TEText;
   public Text HEText;
-
-  static GameObject selected;
+  public static Image UIFlag = null;
   // Drag & pan helper vars
   Plane dragPlane;
   Vector3 offset;
@@ -31,7 +30,7 @@ public class Flag : MonoBehaviour
   Transform cart;
   Cart cartScript;
 
-  Color flagColor;
+  public Color flagColor;
   static int colorIndex = 0;
   public void Reset() {
     closest = new Vector3(-100, 0, 0);
@@ -40,6 +39,9 @@ public class Flag : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
+    if (UIFlag == null) {
+      UIFlag = GameObject.Find("UI Flag").GetComponent<Image>();
+    }
     flagColor = Color.HSVToRGB((++colorIndex % 12f) / 12f, .7f, .9f);
     GetComponent<SpriteRenderer>().color = flagColor;
     velocityText = GameObject.Find("Flag Velocity").GetComponent<Text>();
@@ -56,19 +58,23 @@ public class Flag : MonoBehaviour
     // hitbox = GetComponent<BoxCollider2D>();
   }
 
+  public void Delete() {
+    TrackManager.selectedFlag = null;
+    UIFlag.enabled = false;
+    velocityText.text = "Velocity: ";
+    accelerationText.text = "Acceleration: ";
+    KEText.text = "Kinetic Energy: ";
+    HEText.text = "Thermal Energy: ";
+    PEText.text = "Potential Energy: ";
+    TEText.text = "Total Energy: ";
+    Destroy(gameObject);
+  }
   // Update is called once per frame
   void Update()
   {
     if (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Delete)) {
-      if (selected == gameObject){
-        selected = null;
-        velocityText.text = "Velocity: ";
-        accelerationText.text = "Acceleration: ";
-        KEText.text = "Kinetic Energy: ";
-        HEText.text = "Thermal Energy: ";
-        PEText.text = "Potential Energy: ";
-        TEText.text = "Total Energy: ";
-        Destroy(gameObject);
+      if (TrackManager.selectedFlag == gameObject){
+        Delete();
       }
       
     }
@@ -90,7 +96,7 @@ public class Flag : MonoBehaviour
 
 
     }
-    if(selected == gameObject) {
+    if(TrackManager.selectedFlag == gameObject) {
       velocityText.text = "Velocity: " + velocity.ToString("F2") + " m/s";
       accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
     KEText.text = "Kinetic Energy: " + (Mathf.Max(0,KE)).ToString("F2") + " j";
@@ -102,7 +108,9 @@ public class Flag : MonoBehaviour
 
   void OnMouseDown()
   {
-    selected = gameObject;
+    TrackManager.selectedFlag = gameObject;
+    UIFlag.enabled = true;
+    UIFlag.color = flagColor;
     dragPlane = new Plane(mainCam.transform.forward, transform.position);
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 

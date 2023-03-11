@@ -141,6 +141,12 @@ public class Cart : MonoBehaviour
     RestartSim();
   }
 
+  public void SetFriction(float friction)
+  {
+    this.mu = friction;
+    RestartSim();
+  }
+
   // Start is called before the first frame update
   void Start()
   {
@@ -266,8 +272,8 @@ public class Cart : MonoBehaviour
               vel = Mathf.Sqrt((2 * KE) / mass);
               if (slowDown && !tooHigh)
               {
-                TE = PE + KE - mu * vel * Time.fixedDeltaTime;
-                HE += mu * vel * Time.fixedDeltaTime;
+                TE = PE + KE - mu * 4 * vel * Time.fixedDeltaTime;
+                HE += mu * 4 * vel * Time.fixedDeltaTime;
               }
             }
 

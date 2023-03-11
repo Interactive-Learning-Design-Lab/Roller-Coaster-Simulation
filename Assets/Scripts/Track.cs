@@ -44,7 +44,6 @@ public class Track : MonoBehaviour
   public Text heightText;
   public Slider widthSlider;
   public Text widthText;
-  public Dropdown typeDropdown;
   public GameObject editMenu;
 
   // Drag & pan helper vars
@@ -63,6 +62,7 @@ public class Track : MonoBehaviour
 
   public void Delete()
   {
+    TrackManager.selected = null;
     points = new List<Vector3>();
     lineRenderer.positionCount = 0;
     gameObject.tag = "Untagged";
@@ -83,7 +83,6 @@ public class Track : MonoBehaviour
     widthSlider = GameObject.Find("Width Input").GetComponent<Slider>();
     heightText = GameObject.Find("HText").GetComponent<Text>();
     widthText = GameObject.Find("WText").GetComponent<Text>();
-    typeDropdown = GameObject.Find("Type").GetComponent<Dropdown>();
     editMenu = GameObject.Find("Edit Menu");
 
   }
@@ -221,7 +220,7 @@ public class Track : MonoBehaviour
   {
     if (cart.paused)
     {
-      editMenu.SetActive(true);
+      // editMenu.SetActive(true);
 
       TrackManager.selected = this;
       TrackManager.height = height.ToString();
@@ -233,8 +232,6 @@ public class Track : MonoBehaviour
       heightText.text = "Height: " + height.ToString("F2") + " m";
       widthText.text = "Width: " + width.ToString("F2") + " m";
       
-      typeDropdown.value = (int)type;
-
 
       dragPlane = new Plane(mainCam.transform.forward, transform.position);
       Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);

@@ -23,6 +23,8 @@ public class TrackManager : MonoBehaviour
   public static string height;
   public static string width;
   public static Track selected;
+  public static GameObject selectedFlag;
+
 
   public void SetType(int _type)
   {
@@ -99,7 +101,14 @@ public class TrackManager : MonoBehaviour
 
   public void AddFlag()
   {
-    Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x + Random.Range(-1f,1f) * 3f, 3 + Random.Range(-1f,1f), -3), Quaternion.identity);
+    selectedFlag = Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x + Random.Range(-1f,1f) * 3f, 3 + Random.Range(-1f,1f), -3), Quaternion.identity);
+    StartCoroutine(InstantiateFlag());
+  }
+
+  IEnumerator InstantiateFlag() {
+    yield return new WaitForSeconds(0.01f);
+    Flag.UIFlag.enabled = true;
+    Flag.UIFlag.color = selectedFlag.GetComponent<Flag>().flagColor;
   }
 
   public void Delete()
@@ -114,6 +123,12 @@ public class TrackManager : MonoBehaviour
 
   }
 
+  public void DeleteFlag() 
+  {
+    if (selectedFlag != null) {
+      selectedFlag.GetComponent<Flag>().Delete();
+    }
+  }
 
   // void OnDrawGizmos()
   // {

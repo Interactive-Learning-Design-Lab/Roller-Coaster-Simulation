@@ -89,6 +89,8 @@ public class Cart : MonoBehaviour
 
   public void RestartSim()
   {
+
+    
     if (track.trackPoints.Count > 0)
     {
       friction = 1;

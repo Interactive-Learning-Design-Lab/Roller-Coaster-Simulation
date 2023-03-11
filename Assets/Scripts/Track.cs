@@ -67,6 +67,7 @@ public class Track : MonoBehaviour
     lineRenderer.positionCount = 0;
     gameObject.tag = "Untagged";
     TrackManager.UpdateTracks();
+    TrackManager.trackCount--;
     Destroy(gameObject);
   }
 

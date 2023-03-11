@@ -24,7 +24,7 @@ public class TrackManager : MonoBehaviour
   public static string width;
   public static Track selected;
   public static GameObject selectedFlag;
-
+  public static int trackCount;
 
   public void SetType(int _type)
   {
@@ -66,16 +66,22 @@ public class TrackManager : MonoBehaviour
 
     if (GameObject.Find("Cart").GetComponent<Cart>().paused)
     {
-      if (GameObject.FindGameObjectsWithTag("Track").Length < 4) {
+      if (trackCount < 4) {
 
         Track newTrack = Instantiate(trackPrefab, Vector3.zero + Vector3.right * Random.Range(-1f,1f) * 3f, Quaternion.identity).GetComponent<Track>();
+        trackCount++;
         newTrack.setProperties(2, 2, (TrackType)trackType);
-        UpdateTracks();
+        StartCoroutine(WaitAndUpdate());
       } else {
         Error("Too many tracks");
       }
 
     }
+  }
+
+  IEnumerator WaitAndUpdate() {
+    yield return new WaitForSeconds(0.01f);
+    UpdateTracks();
   }
 
   public void EditTrack()
@@ -199,6 +205,7 @@ public class TrackManager : MonoBehaviour
 
   void Start()
   {
+    trackCount = GameObject.FindGameObjectsWithTag("Track").Length;
     lineRenderer = GetComponent<LineRenderer>();
     heightText = GameObject.Find("HText").GetComponent<Text>();
     widthText = GameObject.Find("WText").GetComponent<Text>();
@@ -214,6 +221,8 @@ public class TrackManager : MonoBehaviour
 
   public static void UpdateTracks()
   {
+    if (trackCount > 0)
+    {
     // FillGaps();
     GetAllPoints();
     // Debug.Log(GetInstance());
@@ -224,6 +233,9 @@ public class TrackManager : MonoBehaviour
     GetInstance().lineRenderer.SetPositions(GetInstance().trackPoints.ToArray());
 
     GameObject.Find("Cart").GetComponent<Cart>().RestartSim();
+    } else {
+      GameObject.Find("Cart").GetComponent<Cart>().Hide();
+    }
   }
 
   public static void FillGaps()

@@ -59,25 +59,16 @@ public class TrackManager : MonoBehaviour
     EditTrack();
   }
 
-  public void CreateTrack()
+  public void CreateTrack(int trackType)
   {
 
     if (GameObject.Find("Cart").GetComponent<Cart>().paused && GameObject.FindGameObjectsWithTag("Track").Length < 4)
     {
-        height = GameObject.Find("New Height Input").GetComponent<InputField>().text;
-      width = GameObject.Find("New Width Input").GetComponent<InputField>().text;
-      type = GameObject.Find("New Type").GetComponent<Dropdown>().value;
-      float w = float.Parse(width);
-      float h = float.Parse(height);
-
-      if (w > 0 && h > 0)
-      {
 
         Track newTrack = Instantiate(trackPrefab, Vector3.zero + Vector3.right * Random.Range(-1f,1f) * 3f, Quaternion.identity).GetComponent<Track>();
-        newTrack.setProperties(w, h, (TrackType)type);
+        newTrack.setProperties(2, 2, (TrackType)trackType);
         UpdateTracks();
 
-      }
     }
   }
 

@@ -151,6 +151,14 @@ MonoBehaviour:
   width: 1
   height: 1
   type: 0
+  heightSlider: {fileID: 0}
+  heightText: {fileID: 0}
+  widthSlider: {fileID: 0}
+  widthText: {fileID: 0}
+  typeDropdown: {fileID: 0}
+  editMenu: {fileID: 0}
+  selected: {fileID: 0}
+  normal: {fileID: 2100000, guid: 103c5a5d3a4424a918ea3cbaf6333c11, type: 2}
 --- !u!120 &5222098647310724681
 LineRenderer:
   m_ObjectHideFlags: 0

@@ -51,8 +51,10 @@ public class Track : MonoBehaviour
   Plane dragPlane;
   Vector3 offset;
   Camera mainCam;
+  public Material selected;
+  public Material normal;
 
-  public void setProperties(float width, float height, TrackType type)
+    public void setProperties(float width, float height, TrackType type)
   {
     this.width = width;
     this.height = height;
@@ -147,6 +149,11 @@ public class Track : MonoBehaviour
   [ContextMenu("Render")]
   void Render()
   {
+    if (TrackManager.selected == this) {
+      lineRenderer.material = selected;
+    } else {
+      lineRenderer.material = normal;
+    }
     lineRenderer.positionCount = 0;
     lineRenderer.positionCount = points.Count;
 

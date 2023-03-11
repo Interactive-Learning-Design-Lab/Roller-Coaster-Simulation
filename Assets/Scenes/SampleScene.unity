@@ -1736,11 +1736,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363279551}
   m_CullTransparentMesh: 1
---- !u!1 &379193076 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5042295724816394434, guid: 7a026980ccbe04e6385429063337f16f, type: 3}
-  m_PrefabInstance: {fileID: 5042295724591345206}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &396361522
 GameObject:
   m_ObjectHideFlags: 0
@@ -6452,7 +6447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5042295724816394434, guid: 7a026980ccbe04e6385429063337f16f, type: 3}
       propertyPath: m_Name
-      value: Flag
+      value: Flag1
       objectReference: {fileID: 0}
     - target: {fileID: 5042295724816394434, guid: 7a026980ccbe04e6385429063337f16f, type: 3}
       propertyPath: m_TagString
@@ -8247,6 +8242,8 @@ MonoBehaviour:
   widthText: {fileID: 0}
   typeDropdown: {fileID: 0}
   editMenu: {fileID: 0}
+  selected: {fileID: 2100000, guid: 35c632ebfc190472a973678860a94c81, type: 2}
+  normal: {fileID: 2100000, guid: 103c5a5d3a4424a918ea3cbaf6333c11, type: 2}
 --- !u!4 &1393602785
 Transform:
   m_ObjectHideFlags: 0
@@ -10664,6 +10661,8 @@ MonoBehaviour:
   widthText: {fileID: 0}
   typeDropdown: {fileID: 0}
   editMenu: {fileID: 0}
+  selected: {fileID: 2100000, guid: 35c632ebfc190472a973678860a94c81, type: 2}
+  normal: {fileID: 2100000, guid: 103c5a5d3a4424a918ea3cbaf6333c11, type: 2}
 --- !u!4 &1759087219
 Transform:
   m_ObjectHideFlags: 0
@@ -11237,7 +11236,7 @@ MonoBehaviour:
   trackPoints: []
   connectorPrefab: {fileID: 5222098647310724687, guid: 8eecf80f558f8412a9aadf0774174852, type: 3}
   trackPrefab: {fileID: 9182521513753671794, guid: 2c04d28639c68436797a0bcf228d10db, type: 3}
-  flagPrefab: {fileID: 379193076}
+  flagPrefab: {fileID: 5042295724816394434, guid: 7a026980ccbe04e6385429063337f16f, type: 3}
 --- !u!4 &2038548757
 Transform:
   m_ObjectHideFlags: 0
@@ -12377,6 +12376,14 @@ PrefabInstance:
       propertyPath: m_Positions.Array.data[100].x
       value: 1.7799996
       objectReference: {fileID: 0}
+    - target: {fileID: 9182521513753671793, guid: 2c04d28639c68436797a0bcf228d10db, type: 3}
+      propertyPath: normal
+      value: 
+      objectReference: {fileID: 2100000, guid: 103c5a5d3a4424a918ea3cbaf6333c11, type: 2}
+    - target: {fileID: 9182521513753671793, guid: 2c04d28639c68436797a0bcf228d10db, type: 3}
+      propertyPath: selected
+      value: 
+      objectReference: {fileID: 2100000, guid: 35c632ebfc190472a973678860a94c81, type: 2}
     - target: {fileID: 9182521513753671793, guid: 2c04d28639c68436797a0bcf228d10db, type: 3}
       propertyPath: points.Array.data[0].x
       value: 0.78

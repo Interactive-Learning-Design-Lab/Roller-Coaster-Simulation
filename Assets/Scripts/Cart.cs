@@ -138,6 +138,7 @@ public class Cart : MonoBehaviour
   public void SetMass(float mass)
   {
     this.mass = mass;
+    RestartSim();
   }
 
   // Start is called before the first frame update
@@ -270,14 +271,13 @@ public class Cart : MonoBehaviour
               }
             }
 
-            Debug.Log((tvel-vel)/Time.fixedDeltaTime);
             acceleration = Vector3.right * (tvel-vel)/Time.fixedDeltaTime;
             lastValidVel = vel;
 
 
             // find the time it takes to get to the next point
             deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
-            if (q++ > 50) { Debug.Log("q>50");/* HE += KE; KE = 0;vel = 0*/; break; }
+            if (q++ > 50) { /* HE += KE; KE = 0;vel = 0*/; break; }
 
           }
           duration = deltaTime;
@@ -298,7 +298,7 @@ public class Cart : MonoBehaviour
       }
       else if (!paused)
       {
-        Debug.Log("q>50");
+
         PauseSim();
         HE += KE;
         KE = 0;

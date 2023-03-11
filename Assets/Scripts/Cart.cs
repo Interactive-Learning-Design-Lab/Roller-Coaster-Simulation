@@ -173,10 +173,10 @@ public class Cart : MonoBehaviour
 
     velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
     accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + (KE).ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + (PE).ToString("F2") + " j";
-    HEText.text = "Thermal Energy: " + (HE).ToString("F2") + " j";
-    TEText.text = "Total Energy: " + (initialTotal).ToString("F2") + " j";
+    KEText.text = "Kinetic Energy: " + (Mathf.Max(0,KE)).ToString("F2") + " j";
+    PEText.text = "Potential Energy: " + (Mathf.Max(0,PE)).ToString("F2") + " j";
+    HEText.text = "Thermal Energy: " + (Mathf.Max(0,HE)).ToString("F2") + " j";
+    TEText.text = "Total Energy: " + (Mathf.Max(0,initialTotal)).ToString("F2") + " j";
     RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
     float maxVal = 0;
     if (initialTotal >= 0.1f)

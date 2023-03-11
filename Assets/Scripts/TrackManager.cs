@@ -61,7 +61,7 @@ public class TrackManager : MonoBehaviour
 
   public void CreateTrack()
   {
-    if (GameObject.Find("Cart").GetComponent<Cart>().paused)
+    if (GameObject.Find("Cart").GetComponent<Cart>().paused && GameObject.FindGameObjectsWithTag("Track").Length < 4)
     {
         height = GameObject.Find("New Height Input").GetComponent<InputField>().text;
       width = GameObject.Find("New Width Input").GetComponent<InputField>().text;

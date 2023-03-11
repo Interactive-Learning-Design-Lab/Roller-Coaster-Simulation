@@ -61,6 +61,7 @@ public class TrackManager : MonoBehaviour
 
   public void CreateTrack()
   {
+
     if (GameObject.Find("Cart").GetComponent<Cart>().paused && GameObject.FindGameObjectsWithTag("Track").Length < 4)
     {
         height = GameObject.Find("New Height Input").GetComponent<InputField>().text;
@@ -72,7 +73,7 @@ public class TrackManager : MonoBehaviour
       if (w > 0 && h > 0)
       {
 
-        Track newTrack = Instantiate(trackPrefab, Vector3.zero, Quaternion.identity).GetComponent<Track>();
+        Track newTrack = Instantiate(trackPrefab, Vector3.zero + Vector3.right * Random.Range(-1f,1f) * 3f, Quaternion.identity).GetComponent<Track>();
         newTrack.setProperties(w, h, (TrackType)type);
         UpdateTracks();
 
@@ -103,7 +104,7 @@ public class TrackManager : MonoBehaviour
 
   public void AddFlag()
   {
-    Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x, 1, -3), Quaternion.identity);
+    Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x + Random.Range(-1f,1f) * 3f, 3 + Random.Range(-1f,1f), -3), Quaternion.identity);
   }
 
   public void Delete()

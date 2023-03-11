@@ -62,12 +62,16 @@ public class TrackManager : MonoBehaviour
   public void CreateTrack(int trackType)
   {
 
-    if (GameObject.Find("Cart").GetComponent<Cart>().paused && GameObject.FindGameObjectsWithTag("Track").Length < 4)
+    if (GameObject.Find("Cart").GetComponent<Cart>().paused)
     {
+      if (GameObject.FindGameObjectsWithTag("Track").Length < 4) {
 
         Track newTrack = Instantiate(trackPrefab, Vector3.zero + Vector3.right * Random.Range(-1f,1f) * 3f, Quaternion.identity).GetComponent<Track>();
         newTrack.setProperties(2, 2, (TrackType)trackType);
         UpdateTracks();
+      } else {
+        Error("Too many tracks");
+      }
 
     }
   }
@@ -310,7 +314,7 @@ public class TrackManager : MonoBehaviour
     }
     else if (coincide)
     {
-      Error("Tracks are coinciding");
+      Error("Tracks are too close");
     }
     else if (tooFar)
     {

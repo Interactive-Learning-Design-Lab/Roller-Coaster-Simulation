@@ -82,7 +82,7 @@ public class Cart : MonoBehaviour
   {
     StartSim();
 
-    yield return new WaitForSeconds(0.01f);
+    yield return new WaitForSecondsRealtime(0.01f);
     PauseSim();
 
   }
@@ -122,6 +122,7 @@ public class Cart : MonoBehaviour
       }
       float theta = track.GetClosestPointSlope(transform.position);
       transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
+      Show();
     }
   }
 
@@ -192,13 +193,18 @@ public class Cart : MonoBehaviour
     if (initialTotal >= 0.1f)
     {
       maxVal = initialTotal;
+      KESlider.value = KE;
+      PESlider.value = PE;
+      HESlider.value = HE;
+    } else {
+      KESlider.value = 0;
+      PESlider.value = 0;
+      HESlider.value = 0;
+      maxVal = 1f;
     }
     KESlider.maxValue = initialTotal;
     PESlider.maxValue = initialTotal;
     HESlider.maxValue = initialTotal;
-    KESlider.value = KE;
-    PESlider.value = PE;
-    HESlider.value = HE;
 
 
     for (int i = 0; i < 1; i++)

@@ -74,6 +74,8 @@ public class TrackManager : MonoBehaviour
         trackCount++;
         selected = newTrack;
         Track.editPanel.SetActive(true);
+        width = "2";
+        height = "2";
         Track.heightSlider.value = 2;
         Track.widthSlider.value = 2;
         heightText.text = "Height: " + 2.ToString("F2") + " m";
@@ -84,11 +86,13 @@ public class TrackManager : MonoBehaviour
         Error("Too many tracks");
       }
 
+    } else {
+      Error("Pause to create track");
     }
   }
 
   IEnumerator WaitAndUpdate() {
-    yield return new WaitForSeconds(0.01f);
+    yield return new WaitForSecondsRealtime(0.01f);
     UpdateTracks();
   }
 
@@ -120,7 +124,7 @@ public class TrackManager : MonoBehaviour
   }
 
   IEnumerator InstantiateFlag() {
-    yield return new WaitForSeconds(0.01f);
+    yield return new WaitForSecondsRealtime(0.01f);
     Flag.UIFlag.enabled = true;
     Flag.UIFlag.color = selectedFlag.GetComponent<Flag>().flagColor;
   }
@@ -232,16 +236,16 @@ public class TrackManager : MonoBehaviour
   {
     if (trackCount > 0)
     {
-    // FillGaps();
-    GetAllPoints();
-    // Debug.Log(GetInstance());
-    // Debug.Log("Reset points");
-    GetInstance().lineRenderer.positionCount = 0;
-    // Debug.Log(GetInstance().trackPoints.Count);
-    GetInstance().lineRenderer.positionCount = GetInstance().trackPoints.Count;
-    GetInstance().lineRenderer.SetPositions(GetInstance().trackPoints.ToArray());
+      // FillGaps();
+      GetAllPoints();
+      // Debug.Log(GetInstance());
+      // Debug.Log("Reset points");
+      GetInstance().lineRenderer.positionCount = 0;
+      // Debug.Log(GetInstance().trackPoints.Count);
+      GetInstance().lineRenderer.positionCount = GetInstance().trackPoints.Count;
+      GetInstance().lineRenderer.SetPositions(GetInstance().trackPoints.ToArray());
 
-    GameObject.Find("Cart").GetComponent<Cart>().RestartSim();
+      GameObject.Find("Cart").GetComponent<Cart>().RestartSim();
     } else {
       GameObject.Find("Cart").GetComponent<Cart>().Hide();
     }
@@ -311,16 +315,6 @@ public class TrackManager : MonoBehaviour
         LineRenderer tailTrack = tracks[i - 1].GetComponent<LineRenderer>();
         Vector3 tail = tailTrack.GetPosition(tailTrack.positionCount - 1);
 
-        if (Vector3.SqrMagnitude(head - tail) > 0.1f)
-        {
-          // Error("Tracks are too far apart");
-          tooFar = true;
-          GetInstance().trackPoints = new List<Vector3>();
-          GameObject.Find("Cart").GetComponent<Cart>().Hide();
-          errCount++;
-          break;
-        }
-
         if (head.x <= tail.x)
         {
           // Error("Tracks cannot coincide");
@@ -329,6 +323,16 @@ public class TrackManager : MonoBehaviour
           GameObject.Find("Cart").GetComponent<Cart>().Hide();
           errCount++;
           coincide = true;
+          break;
+        }
+
+        if (Vector3.SqrMagnitude(head - tail) > 0.1f)
+        {
+          // Error("Tracks are too far apart");
+          tooFar = true;
+          GetInstance().trackPoints = new List<Vector3>();
+          GameObject.Find("Cart").GetComponent<Cart>().Hide();
+          errCount++;
           break;
         }
       }
@@ -348,13 +352,13 @@ public class TrackManager : MonoBehaviour
     {
       HideError();
     }
-    else if (coincide)
+    else if (coincide || errCount > 1)
     {
-      Error("Tracks are too close");
+      Error("Tracks are too close", 0);
     }
     else if (tooFar)
     {
-      Error("Tracks are too far apart");
+      Error("Tracks are too far apart", 0);
     }
 
 
@@ -370,11 +374,18 @@ public class TrackManager : MonoBehaviour
     }
   }
 
-  public static void Error(string err)
+  public static void Error(string err, float duration = 5f)
   {
     GameObject panel = GameObject.Find("ErrorPanel");
     panel.GetComponent<Image>().enabled = true;
     panel.transform.GetChild(0).GetComponent<Text>().text = err;
+    _instance.StartCoroutine(ShowError(err, duration));
+  }
+
+  public static IEnumerator ShowError (string err, float duration) {
+    yield return new WaitForSecondsRealtime(duration);
+    if (duration > float.Epsilon)
+    HideError();
   }
   public static void HideError()
   {

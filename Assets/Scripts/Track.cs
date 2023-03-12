@@ -170,8 +170,11 @@ public class Track : MonoBehaviour
 
     lineRenderer.SetPositions(points.ToArray());
 
-    hitbox.size = new Vector2(width + 0.1f, height + 0.2f);
-    hitbox.offset = new Vector2(0, height / 2);
+    if (hitbox)
+    {
+      hitbox.size = new Vector2(width + 0.1f, height + 0.2f);
+      hitbox.offset = new Vector2(0, height / 2);
+    }
   }
 
   float DownSlope(float x)

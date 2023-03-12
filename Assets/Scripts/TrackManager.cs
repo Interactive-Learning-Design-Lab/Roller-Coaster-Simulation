@@ -120,13 +120,12 @@ public class TrackManager : MonoBehaviour
   public void AddFlag()
   {
     selectedFlag = Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x + Random.Range(-1f,1f) * 3f, 3 + Random.Range(-1f,1f), -3), Quaternion.identity);
-    StartCoroutine(InstantiateFlag());
+    StartCoroutine(InstantiateFlag(selectedFlag));
   }
 
-  IEnumerator InstantiateFlag() {
+  IEnumerator InstantiateFlag(GameObject newFlag) {
     yield return new WaitForSecondsRealtime(0.01f);
-    Flag.UIFlag.enabled = true;
-    Flag.UIFlag.color = selectedFlag.GetComponent<Flag>().flagColor;
+    newFlag.GetComponent<Flag>().Create();
   }
 
   public void Delete()

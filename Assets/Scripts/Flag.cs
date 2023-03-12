@@ -22,6 +22,8 @@ public class Flag : MonoBehaviour
   public Text TEText;
   public Text HEText;
   public static Image UIFlag = null;
+  public static RectTransform flagPanel = null;
+  public static GameObject deleteButton = null;
   // Drag & pan helper vars
   Plane dragPlane;
   Vector3 offset;
@@ -42,6 +44,13 @@ public class Flag : MonoBehaviour
     if (UIFlag == null) {
       UIFlag = GameObject.Find("UI Flag").GetComponent<Image>();
     }
+    if (deleteButton == null) {
+      deleteButton = GameObject.Find("Delete Flag");
+      deleteButton.SetActive(false);
+    }
+    if (flagPanel == null) {
+      flagPanel = GameObject.Find("Flags").GetComponent<RectTransform>();
+    }
     flagColor = Color.HSVToRGB((++colorIndex % 12f) / 12f, .7f, .9f);
     GetComponent<SpriteRenderer>().color = flagColor;
     velocityText = GameObject.Find("Flag Velocity").GetComponent<Text>();
@@ -58,7 +67,16 @@ public class Flag : MonoBehaviour
     // hitbox = GetComponent<BoxCollider2D>();
   }
 
+  public void Create() {
+    UIFlag.enabled = true;
+    UIFlag.color = flagColor;
+    deleteButton.SetActive(true);
+    flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 110);
+  }
+
   public void Delete() {
+    deleteButton.SetActive(false);
+    flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 230);
     TrackManager.selectedFlag = null;
     UIFlag.enabled = false;
     velocityText.text = "Velocity: ";
@@ -108,6 +126,9 @@ public class Flag : MonoBehaviour
 
   void OnMouseDown()
   {
+    deleteButton.SetActive(true);
+    flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 110);
+
     TrackManager.selectedFlag = gameObject;
     UIFlag.enabled = true;
     UIFlag.color = flagColor;

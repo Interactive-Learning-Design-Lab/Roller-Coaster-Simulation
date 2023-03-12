@@ -140,12 +140,14 @@ public class Cart : MonoBehaviour
   public void SetMass(float mass)
   {
     this.mass = mass;
+    GameObject.Find("MText").GetComponent<Text>().text = "Mass: " + mass.ToString("F2") + " kg";
     RestartSim();
   }
 
   public void SetFriction(float friction)
   {
     this.mu = friction;
+    GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + mu.ToString("F2");
     RestartSim();
   }
 

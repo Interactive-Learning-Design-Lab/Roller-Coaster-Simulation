@@ -61,6 +61,8 @@ public class TrackManager : MonoBehaviour
     EditTrack();
   }
 
+
+
   public void CreateTrack(int trackType)
   {
 
@@ -70,6 +72,12 @@ public class TrackManager : MonoBehaviour
 
         Track newTrack = Instantiate(trackPrefab, Vector3.zero + Vector3.right * Random.Range(-1f,1f) * 3f, Quaternion.identity).GetComponent<Track>();
         trackCount++;
+        selected = newTrack;
+        Track.editPanel.SetActive(true);
+        Track.heightSlider.value = 2;
+        Track.widthSlider.value = 2;
+        heightText.text = "Height: " + 2.ToString("F2") + " m";
+        widthText.text = "Width: " + 2.ToString("F2") + " m";
         newTrack.setProperties(2, 2, (TrackType)trackType);
         StartCoroutine(WaitAndUpdate());
       } else {
@@ -207,8 +215,9 @@ public class TrackManager : MonoBehaviour
   {
     trackCount = GameObject.FindGameObjectsWithTag("Track").Length;
     lineRenderer = GetComponent<LineRenderer>();
-    heightText = GameObject.Find("HText").GetComponent<Text>();
-    widthText = GameObject.Find("WText").GetComponent<Text>();
+
+    heightText = Track.heightText;
+    widthText = Track.widthText;
     _instance = this;
     UpdateTracks();
 

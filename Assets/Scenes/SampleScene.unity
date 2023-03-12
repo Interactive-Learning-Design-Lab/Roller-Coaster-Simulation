@@ -1132,7 +1132,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -15.379883, y: 110.35547}
+  m_AnchoredPosition: {x: -15.379883, y: -73}
   m_SizeDelta: {x: 265.24, y: -857.5411}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &125292203
@@ -5361,7 +5361,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 20
   m_WholeNumbers: 0
-  m_Value: 15
+  m_Value: 5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -6033,7 +6033,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -15.379883, y: -101.37012}
+  m_AnchoredPosition: {x: -15.379883, y: 137.75488}
   m_SizeDelta: {x: 265.24, y: -918.0804}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &853064827
@@ -7936,7 +7936,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Friction
+  m_Text: 'Friction: 5.00'
 --- !u!222 &1054098180
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9816,7 +9816,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Mass
+  m_Text: 'Mass: 1.00 kg'
 --- !u!222 &1306211322
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10705,11 +10705,6 @@ MonoBehaviour:
   width: 1
   height: 2
   type: 1
-  heightSlider: {fileID: 0}
-  heightText: {fileID: 0}
-  widthSlider: {fileID: 0}
-  widthText: {fileID: 0}
-  editMenu: {fileID: 0}
   selected: {fileID: 2100000, guid: 35c632ebfc190472a973678860a94c81, type: 2}
   normal: {fileID: 2100000, guid: 103c5a5d3a4424a918ea3cbaf6333c11, type: 2}
 --- !u!4 &1393602785
@@ -13275,11 +13270,6 @@ MonoBehaviour:
   width: 2
   height: 2
   type: 3
-  heightSlider: {fileID: 0}
-  heightText: {fileID: 0}
-  widthSlider: {fileID: 0}
-  widthText: {fileID: 0}
-  editMenu: {fileID: 0}
   selected: {fileID: 2100000, guid: 35c632ebfc190472a973678860a94c81, type: 2}
   normal: {fileID: 2100000, guid: 103c5a5d3a4424a918ea3cbaf6333c11, type: 2}
 --- !u!4 &1759087219

@@ -28,7 +28,7 @@ public class Track : MonoBehaviour
   [SerializeField]
   LineRenderer lineRenderer;
   BoxCollider2D hitbox;
-  Cart cart;
+  static Cart cart;
 
   // Points of current track
   [SerializeField] List<Vector3> points;
@@ -40,11 +40,11 @@ public class Track : MonoBehaviour
   [SerializeField]
   TrackType type;
 
-  public Slider heightSlider;
-  public Text heightText;
-  public Slider widthSlider;
-  public Text widthText;
-  public GameObject editMenu;
+  public static Slider heightSlider;
+  public static Text heightText;
+  public static Slider widthSlider;
+  public static Text widthText;
+  public static GameObject editMenu;
 
   // Drag & pan helper vars
   Plane dragPlane;
@@ -52,8 +52,9 @@ public class Track : MonoBehaviour
   Camera mainCam;
   public Material selected;
   public Material normal;
+  public static GameObject editPanel = null;
 
-    public void setProperties(float width, float height, TrackType type)
+  public void setProperties(float width, float height, TrackType type)
   {
     this.width = width;
     this.height = height;
@@ -62,7 +63,9 @@ public class Track : MonoBehaviour
 
   public void Delete()
   {
+    editPanel.SetActive(false);
     TrackManager.selected = null;
+
     points = new List<Vector3>();
     lineRenderer.positionCount = 0;
     gameObject.tag = "Untagged";
@@ -75,16 +78,24 @@ public class Track : MonoBehaviour
   [ContextMenu("Initialize")]
   void Initialize()
   {
+
     lineRenderer = GetComponent<LineRenderer>();
     points = new List<Vector3>();
     mainCam = Camera.main;
     hitbox = GetComponent<BoxCollider2D>();
     cart = GameObject.Find("Cart").GetComponent<Cart>();
-    heightSlider = GameObject.Find("Height Input").GetComponent<Slider>();
-    widthSlider = GameObject.Find("Width Input").GetComponent<Slider>();
-    heightText = GameObject.Find("HText").GetComponent<Text>();
-    widthText = GameObject.Find("WText").GetComponent<Text>();
-    editMenu = GameObject.Find("Edit Menu");
+
+    if (editPanel == null) {
+      heightSlider = GameObject.Find("Height Input").GetComponent<Slider>();
+      widthSlider = GameObject.Find("Width Input").GetComponent<Slider>();
+      heightText = GameObject.Find("HText").GetComponent<Text>();
+      widthText = GameObject.Find("WText").GetComponent<Text>();
+      editMenu = GameObject.Find("Edit Menu");
+
+      editPanel = GameObject.Find("Edit Menu");
+      editPanel.SetActive(false);
+
+    }
 
   }
 
@@ -221,7 +232,7 @@ public class Track : MonoBehaviour
   {
     if (cart.paused)
     {
-      // editMenu.SetActive(true);
+      editPanel.SetActive(true);
 
       TrackManager.selected = this;
       TrackManager.height = height.ToString();

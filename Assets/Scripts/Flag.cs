@@ -115,12 +115,12 @@ public class Flag : MonoBehaviour
 
     }
     if(TrackManager.selectedFlag == gameObject) {
-      velocityText.text = "Velocity: " + velocity.ToString("F2") + " m/s";
-      accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + (Mathf.Max(0,KE)).ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + (Mathf.Max(0,PE)).ToString("F2") + " j";
-    HEText.text = "Thermal Energy: " + (Mathf.Max(0,HE)).ToString("F2") + " j";
-    TEText.text = "Total Energy: " + (Mathf.Max(0,TE)).ToString("F2") + " j";
+      velocityText.text = "Velocity: " + (velocity* Mathf.Sqrt(20f)).ToString("F2") + " m/s";
+      accelerationText.text = "Acceleration: " + (acceleration.magnitude * Mathf.Sqrt(20f)).ToString("F2") + " m/s^2";
+    KEText.text = "Kinetic Energy: " + (Mathf.Max(0,KE)*2000f).ToString("F2") + " j";
+    PEText.text = "Potential Energy: " + (Mathf.Max(0,PE)*2000f).ToString("F2") + " j";
+    HEText.text = "Thermal Energy: " + (Mathf.Max(0,HE)*2000f).ToString("F2") + " j";
+    TEText.text = "Total Energy: " + (Mathf.Max(0,TE)*2000f).ToString("F2") + " j";
     }
   }
 

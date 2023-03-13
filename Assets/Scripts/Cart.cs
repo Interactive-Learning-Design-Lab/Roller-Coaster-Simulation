@@ -141,7 +141,7 @@ public class Cart : MonoBehaviour
   public void SetMass(float mass)
   {
     this.mass = mass;
-    GameObject.Find("MText").GetComponent<Text>().text = "Mass: " + mass.ToString("F2") + " kg";
+    GameObject.Find("MText").GetComponent<Text>().text = "Mass: " + (mass*100f).ToString("F2") + " kg";
     RestartSim();
   }
 
@@ -182,13 +182,13 @@ public class Cart : MonoBehaviour
   void FixedUpdate()
   {
 
-    velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
-    accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + (Mathf.Max(0,KE)).ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + (Mathf.Max(0,PE)).ToString("F2") + " j";
-    HEText.text = "Thermal Energy: " + (Mathf.Max(0,HE)).ToString("F2") + " j";
-    TEText.text = "Total Energy: " + (Mathf.Max(0,initialTotal)).ToString("F2") + " j";
-    RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
+    velocityText.text = "Velocity: " + (vel * Mathf.Sqrt(20f)).ToString("F2") + " m/s";
+    accelerationText.text = "Acceleration: " + (acceleration.magnitude * Mathf.Sqrt(20f)).ToString("F2") + " m/s^2";
+    KEText.text = "Kinetic Energy: " + (Mathf.Max(0,KE)*2000f).ToString("F2") + " j";
+    PEText.text = "Potential Energy: " + (Mathf.Max(0,PE)*2000f).ToString("F2") + " j";
+    HEText.text = "Thermal Energy: " + (Mathf.Max(0,HE)*2000f).ToString("F2") + " j";
+    TEText.text = "Total Energy: " + (Mathf.Max(0,initialTotal)*2000f).ToString("F2") + " j";
+    RAText.text = "Initial Drop: " + (releaseHeight * 20).ToString("F2") + " m";
     float maxVal = 0;
     if (initialTotal >= 0.1f)
     {

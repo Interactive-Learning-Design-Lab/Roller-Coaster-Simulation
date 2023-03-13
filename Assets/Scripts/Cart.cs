@@ -212,7 +212,7 @@ public class Cart : MonoBehaviour
       if (!paused && track.trackPoints.Count > 0 && (!slowDown || vel > 0.1f))
       {
 
-        if (transform.position.x > track.trackPoints[track.trackPoints.Count - 30].x)
+        if (transform.position.x >= track.trackPoints[track.trackPoints.Count - 31].x)
         {
           slowDown = true;
         }
@@ -239,9 +239,7 @@ public class Cart : MonoBehaviour
             Vector3[] closestPoints = track.GetClosestPoints((Vector3)final);
             if (closestPoints[1] == closestPoints[2])
             {
-              KE = 0;
               vel = 0;
-              PauseSim();
               break;
             }
             initial = closestPoints[1];
@@ -293,7 +291,7 @@ public class Cart : MonoBehaviour
 
             // find the time it takes to get to the next point
             deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
-            if (q++ > 50) { /* HE += KE; KE = 0;vel = 0*/; break; }
+            if (q++ > 50) { /* HE += KE; KE = 0;vel = 0*/;if (slowDown) vel = 0; break; }
 
           }
           duration = deltaTime;

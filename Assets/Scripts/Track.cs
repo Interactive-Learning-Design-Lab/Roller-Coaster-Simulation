@@ -54,11 +54,11 @@ public class Track : MonoBehaviour
   public Material normal;
   public static GameObject editPanel = null;
 
-  public void setProperties(float width, float height, TrackType type)
+  public void setProperties(float width, float height, TrackType _type)
   {
     this.width = width;
     this.height = height;
-    this.type = type;
+    this.type = _type;
   }
 
   public void Delete()

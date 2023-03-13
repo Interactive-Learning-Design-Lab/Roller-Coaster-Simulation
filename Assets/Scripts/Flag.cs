@@ -15,15 +15,17 @@ public class Flag : MonoBehaviour
   public float TE;
   public float HE;
 
-  public Text velocityText;
-  public Text accelerationText;
-  public Text PEText;
-  public Text KEText;
-  public Text TEText;
-  public Text HEText;
+  public static Text velocityText;
+  public static Text accelerationText;
+  public static Text PEText;
+  public static Text KEText;
+  public static Text TEText;
+  public static Text HEText;
   public static Image UIFlag = null;
   public static RectTransform flagPanel = null;
   public static GameObject deleteButton = null;
+  public static GameObject flagValues = null;
+  
   // Drag & pan helper vars
   Plane dragPlane;
   Vector3 offset;
@@ -53,17 +55,33 @@ public class Flag : MonoBehaviour
     }
     flagColor = Color.HSVToRGB((++colorIndex % 12f) / 12f, .7f, .9f);
     GetComponent<SpriteRenderer>().color = flagColor;
-    velocityText = GameObject.Find("Flag Velocity").GetComponent<Text>();
-    accelerationText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
-    KEText = GameObject.Find("Flag KE").GetComponent<Text>();
-    PEText = GameObject.Find("Flag PE").GetComponent<Text>();
-    TEText = GameObject.Find("Flag TE").GetComponent<Text>();
-    HEText = GameObject.Find("Flag HE").GetComponent<Text>();
+    if (velocityText == null) {
+      velocityText = GameObject.Find("Flag Velocity").GetComponent<Text>();
+    }
+    if (accelerationText == null) {
+      accelerationText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
+    }
+    if (KEText == null) {
+      KEText = GameObject.Find("Flag KE").GetComponent<Text>();
+    }
+    if (PEText == null) {
+      PEText = GameObject.Find("Flag PE").GetComponent<Text>();
+    }
+    if (TEText == null) {
+      TEText = GameObject.Find("Flag TE").GetComponent<Text>();
+    }
+    if (HEText == null) {
+      HEText = GameObject.Find("Flag HE").GetComponent<Text>();
+    }
 
     cart = GameObject.Find("Cart").transform;
 
     cartScript = cart.GetComponent<Cart>();
     mainCam = Camera.main;
+    if (flagValues == null) {
+      flagValues = GameObject.Find("Flag Values");
+      flagValues.SetActive(false);
+    }
     // hitbox = GetComponent<BoxCollider2D>();
   }
 
@@ -71,20 +89,22 @@ public class Flag : MonoBehaviour
     UIFlag.enabled = true;
     UIFlag.color = flagColor;
     deleteButton.SetActive(true);
+    flagValues.SetActive(true);
     flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 110);
   }
 
   public void Delete() {
     deleteButton.SetActive(false);
+    flagValues.SetActive(false);
     flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 230);
     TrackManager.selectedFlag = null;
     UIFlag.enabled = false;
-    velocityText.text = "Velocity: ";
-    accelerationText.text = "Acceleration: ";
-    KEText.text = "Kinetic Energy: ";
-    HEText.text = "Thermal Energy: ";
-    PEText.text = "Potential Energy: ";
-    TEText.text = "Total Energy: ";
+    // velocityText.text = "Velocity: ";
+    // accelerationText.text = "Acceleration: ";
+    // KEText.text = "Kinetic Energy: ";
+    // HEText.text = "Thermal Energy: ";
+    // PEText.text = "Potential Energy: ";
+    // TEText.text = "Total Energy: ";
     Destroy(gameObject);
   }
   // Update is called once per frame
@@ -127,6 +147,7 @@ public class Flag : MonoBehaviour
   void OnMouseDown()
   {
     deleteButton.SetActive(true);
+    flagValues.SetActive(true);
     flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 110);
 
     TrackManager.selectedFlag = gameObject;

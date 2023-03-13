@@ -25,6 +25,7 @@ public class TrackManager : MonoBehaviour
   public static Track selected;
   public static GameObject selectedFlag;
   public static int trackCount;
+  public static int errCount = 0;
 
   public void SetType(int _type)
   {
@@ -302,7 +303,7 @@ public class TrackManager : MonoBehaviour
     GetInstance().trackPoints = new List<Vector3>();
 
 
-    int errCount = 0;
+    errCount = 0;
     bool coincide = false;
     bool tooFar = false;
     // For each track add points to trackPoints
@@ -320,8 +321,8 @@ public class TrackManager : MonoBehaviour
           coincide = true;
           GetInstance().trackPoints = new List<Vector3>();
           GameObject.Find("Cart").GetComponent<Cart>().Hide();
-          errCount++;
           coincide = true;
+          errCount++;
           break;
         }
 

@@ -80,6 +80,7 @@ public class Track : MonoBehaviour
   {
 
     lineRenderer = GetComponent<LineRenderer>();
+    lineRenderer.material = normal;
     points = new List<Vector3>();
     mainCam = Camera.main;
     hitbox = GetComponent<BoxCollider2D>();
@@ -162,8 +163,13 @@ public class Track : MonoBehaviour
   {
     if (TrackManager.selected == this) {
       lineRenderer.material = selected;
-    } else {
+      gameObject.layer = 6;
+    } else if (TrackManager.errCount > 0) {
       lineRenderer.material = normal;
+      gameObject.layer = 3;
+    } else {
+      gameObject.layer = 3;
+      lineRenderer.materials = new Material[0];
     }
     lineRenderer.positionCount = 0;
     lineRenderer.positionCount = points.Count;

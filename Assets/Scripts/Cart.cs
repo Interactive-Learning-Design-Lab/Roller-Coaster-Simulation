@@ -102,10 +102,10 @@ public class Cart : MonoBehaviour
       waiting = false;
       tooHigh = true;
       positiveVel = true;
-      transform.position = track.trackPoints[0];
+      transform.position = track.trackPoints[2];
       GameObject.Find("Wall").transform.position = track.trackPoints[track.trackPoints.Count - 1];
-      releaseHeight = transform.position.y;
-      TE = mass * 9.81f * releaseHeight + 0.0001f;
+      releaseHeight = track.trackPoints[0].y;
+      TE = mass * (9.81f * releaseHeight + 0.00001f);
       initialTotal = TE;
       PE = TE;
       KE = 0;
@@ -141,14 +141,14 @@ public class Cart : MonoBehaviour
   public void SetMass(float mass)
   {
     this.mass = mass;
-    GameObject.Find("MText").GetComponent<Text>().text = "Mass: " + (mass*100f).ToString("F2") + " kg";
+    GameObject.Find("MText").GetComponent<Text>().text = "Mass: " + mass.ToString("F2") + " kg";
     RestartSim();
   }
 
   public void SetFriction(float friction)
   {
     this.mu = friction;
-    GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + mu.ToString("F2");
+    GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + (mu/100f).ToString("F2");
     RestartSim();
   }
 
@@ -174,7 +174,7 @@ public class Cart : MonoBehaviour
     Time.timeScale = 4f;
     track = GameObject.FindGameObjectWithTag("Track Manager").GetComponent<TrackManager>();
     if (track.trackPoints.Count > 0)
-      transform.position = track.trackPoints[0];
+      transform.position = track.trackPoints[2];
     PauseSim();
   }
 
@@ -182,13 +182,13 @@ public class Cart : MonoBehaviour
   void FixedUpdate()
   {
 
-    velocityText.text = "Velocity: " + (vel * Mathf.Sqrt(20f)).ToString("F2") + " m/s";
-    accelerationText.text = "Acceleration: " + (acceleration.magnitude * Mathf.Sqrt(20f)).ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + (Mathf.Max(0,KE)*2000f).ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + (Mathf.Max(0,PE)*2000f).ToString("F2") + " j";
-    HEText.text = "Thermal Energy: " + (Mathf.Max(0,HE)*2000f).ToString("F2") + " j";
-    TEText.text = "Total Energy: " + (Mathf.Max(0,initialTotal)*2000f).ToString("F2") + " j";
-    RAText.text = "Initial Drop: " + (releaseHeight * 20).ToString("F2") + " m";
+    velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
+    accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
+    KEText.text = "Kinetic Energy: " + Mathf.Max(0,KE).ToString("F2") + " j";
+    PEText.text = "Potential Energy: " + Mathf.Max(0,PE).ToString("F2") + " j";
+    HEText.text = "Thermal Energy: " + Mathf.Max(0,HE).ToString("F2") + " j";
+    TEText.text = "Total Energy: " + Mathf.Max(0,initialTotal).ToString("F2") + " j";
+    RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
     float maxVal = 0;
     if (initialTotal >= 0.1f)
     {
@@ -209,7 +209,7 @@ public class Cart : MonoBehaviour
 
     for (int i = 0; i < 1; i++)
     {
-      if (!paused && track.trackPoints.Count > 0 && (!slowDown || vel > 0.1f))
+      if (!paused && track.trackPoints.Count > 0 && (!slowDown || vel > 0.01f))
       {
 
         if (transform.position.x >= track.trackPoints[track.trackPoints.Count - 31].x)
@@ -250,7 +250,7 @@ public class Cart : MonoBehaviour
               tooHigh = true;
               positiveVel = !positiveVel;
             }
-            if (transform.position.y + 0.009f < releaseHeight && tooHigh)
+            if (transform.position.y + 0.009f< releaseHeight && tooHigh)
             {
               tooHigh = false;
             }

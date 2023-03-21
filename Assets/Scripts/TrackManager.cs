@@ -51,14 +51,14 @@ public class TrackManager : MonoBehaviour
   public void SetHeight(float _height)
   {
     height = _height + "";
-    heightText.text = "Height: " + (_height * 20f).ToString("F2") + " m";
+    heightText.text = "Height: " + (_height).ToString("F2") + " m";
     EditTrack();
   }
 
   public void setWidth(float _width)
   {
     width = _width + "";
-    widthText.text = "Width: " + (_width * 20f).ToString("F2") + " m";
+    widthText.text = "Width: " + (_width).ToString("F2") + " m";
     EditTrack();
   }
 
@@ -79,8 +79,8 @@ public class TrackManager : MonoBehaviour
         height = "2";
         Track.heightSlider.value = 2;
         Track.widthSlider.value = 2;
-        heightText.text = "Height: " + 40.ToString("F2") + " m";
-        widthText.text = "Width: " + 40.ToString("F2") + " m";
+        heightText.text = "Height: 2.00 m";
+        widthText.text = "Width: 2.00 m";
         newTrack.setProperties(2, 2, (TrackType)trackType);
         StartCoroutine(WaitAndUpdate());
       } else {

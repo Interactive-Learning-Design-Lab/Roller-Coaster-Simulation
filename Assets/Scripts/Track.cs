@@ -250,8 +250,8 @@ public class Track : MonoBehaviour
 
       heightSlider.value = height;
       widthSlider.value = width;
-      heightText.text = "Height: " + (height*20f).ToString("F2") + " m";
-      widthText.text = "Width: " + (width*20f).ToString("F2") + " m";
+      heightText.text = "Height: " + height.ToString("F2") + " m";
+      widthText.text = "Width: " + width.ToString("F2") + " m";
       
 
       dragPlane = new Plane(mainCam.transform.forward, transform.position);

@@ -175,20 +175,54 @@ public class Cart : MonoBehaviour
     track = GameObject.FindGameObjectWithTag("Track Manager").GetComponent<TrackManager>();
     if (track.trackPoints.Count > 0)
       transform.position = track.trackPoints[2];
-    PauseSim();
+    RestartSim();
   }
 
+
+  float round(float v) {
+    return Mathf.Max(0.00f, Mathf.Round(v * 100) / 100f);
+  }
   // Update is called once per frame
   void FixedUpdate()
   {
+    float d_ReleaseHeight = round(releaseHeight);
+    float d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
+    
+    float d_PE = round(mass * 9.81f * transform.position.y);
+    if (d_PE <= 0.02)
+    {
+      d_PE = 0;
+    }
+
+    float d_HE = round(HE / (initialTotal - PE) * (d_totalEnergy - d_PE));
+    float d_KE = round(d_totalEnergy - (d_PE + d_HE));
+
+    if (d_HE != d_HE || d_HE <= 0.02f)
+    {
+      d_HE = 0;
+    }
+
+    if (d_KE != d_KE || d_KE <= 0.02f)
+    {
+      d_KE = 0;
+    }
+    
+    // if (d_HE <= 0.01f || d_KE <= 0.01f)
+    {
+      d_PE = d_totalEnergy - (d_HE + d_KE);
+    }
+    
+    // float d_velocity = Mathf.Sqrt((2 * d_KE) / mass);
+
+
 
     velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
     accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + Mathf.Max(0,KE).ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + Mathf.Max(0,PE).ToString("F2") + " j";
-    HEText.text = "Thermal Energy: " + Mathf.Max(0,HE).ToString("F2") + " j";
-    TEText.text = "Total Energy: " + Mathf.Max(0,initialTotal).ToString("F2") + " j";
-    RAText.text = "Initial Drop: " + releaseHeight.ToString("F2") + " m";
+    KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
+    PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
+    HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
+    TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2") + " j";
+    RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2") + " m";
     float maxVal = 0;
     if (initialTotal >= 0.1f)
     {

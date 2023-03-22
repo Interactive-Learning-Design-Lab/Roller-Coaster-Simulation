@@ -833,7 +833,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 20
+  m_Text: 1
 --- !u!222 &85616320
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1864,7 +1864,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 1
 --- !u!222 &278380070
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2619,7 +2619,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 20
+  m_Text: 1
 --- !u!222 &420894995
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5359,9 +5359,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 394452424}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 20
+  m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 5
+  m_Value: 20
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -6984,7 +6984,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 2000
+  m_Text: 50
 --- !u!222 &960360678
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7847,9 +7847,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1024421396}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 20
+  m_MaxValue: 50
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 20
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -7936,7 +7936,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Friction: 5.00'
+  m_Text: 'Friction: 0.20'
 --- !u!222 &1054098180
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9816,7 +9816,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Mass: 100.00 kg'
+  m_Text: 'Mass: 20.00 kg'
 --- !u!222 &1306211322
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10172,7 +10172,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: '5
+
+'
 --- !u!222 &1362462727
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12486,8 +12488,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   paused: 0
-  mu: 15
-  mass: 1
+  mu: 20
+  mass: 20
   slowDown: 0
   friction: 1
   initialTotal: 0
@@ -13964,7 +13966,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 20
+  m_Text: 1
 --- !u!222 &1990424132
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14731,7 +14733,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: '5
+
+'
 --- !u!222 &2107870838
 CanvasRenderer:
   m_ObjectHideFlags: 0

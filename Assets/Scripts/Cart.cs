@@ -36,6 +36,10 @@ public class Cart : MonoBehaviour
   Vector3 initial;
   Vector3? final = null;
   float lastValidVel;
+  public float d_PE = 0;
+  public float d_HE = 0;
+  public float d_KE = 0;
+  public float d_totalEnergy = 0;
 
   Text velocityText;
   Text accelerationText;
@@ -186,16 +190,16 @@ public class Cart : MonoBehaviour
   void FixedUpdate()
   {
     float d_ReleaseHeight = round(releaseHeight);
-    float d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
+    d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
     
-    float d_PE = round(mass * 9.81f * transform.position.y);
+    d_PE = round(mass * 9.81f * transform.position.y);
     if (d_PE <= 0.02)
     {
       d_PE = 0;
     }
 
-    float d_HE = round(HE / (initialTotal - PE) * (d_totalEnergy - d_PE));
-    float d_KE = round(d_totalEnergy - (d_PE + d_HE));
+    d_HE = round(HE / (initialTotal - PE) * (d_totalEnergy - d_PE));
+    d_KE = round(d_totalEnergy - (d_PE + d_HE));
 
     if (d_HE != d_HE || d_HE <= 0.02f)
     {
@@ -224,21 +228,21 @@ public class Cart : MonoBehaviour
     TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2") + " j";
     RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2") + " m";
     float maxVal = 0;
-    if (initialTotal >= 0.1f)
+    if (d_totalEnergy >= 0.1f)
     {
-      maxVal = initialTotal;
-      KESlider.value = KE;
-      PESlider.value = PE;
-      HESlider.value = HE;
+      maxVal = d_totalEnergy;
+      KESlider.value = d_KE;
+      PESlider.value = d_PE;
+      HESlider.value = d_HE;
     } else {
       KESlider.value = 0;
       PESlider.value = 0;
       HESlider.value = 0;
       maxVal = 1f;
     }
-    KESlider.maxValue = initialTotal;
-    PESlider.maxValue = initialTotal;
-    HESlider.maxValue = initialTotal;
+    KESlider.maxValue = maxVal;
+    PESlider.maxValue = maxVal;
+    HESlider.maxValue = maxVal;
 
 
     for (int i = 0; i < 1; i++)
@@ -279,12 +283,12 @@ public class Cart : MonoBehaviour
             initial = closestPoints[1];
 
             // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
-            if (transform.position.y + 0.007f >= releaseHeight && !tooHigh)
+            if (initial.y + 0.009f >= releaseHeight && !tooHigh)
             {
               tooHigh = true;
               positiveVel = !positiveVel;
             }
-            if (transform.position.y + 0.009f< releaseHeight && tooHigh)
+            if (initial.y + 0.03f< releaseHeight && tooHigh)
             {
               tooHigh = false;
             }
@@ -304,7 +308,7 @@ public class Cart : MonoBehaviour
             {
               // tooHigh = true;
               vel = lastValidVel;
-              final = initial;
+              // final = initial;
               PE = TE - KE;
 
             }
@@ -325,7 +329,16 @@ public class Cart : MonoBehaviour
 
             // find the time it takes to get to the next point
             deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
-            if (q++ > 50) { /* HE += KE; KE = 0;vel = 0*/;if (slowDown) vel = 0; break; }
+            if (q++ > 10) { /* HE += KE; KE = 0;vel = 0*/;
+              if (slowDown)
+                vel = 0;
+              else {
+                transform.position = (Vector3) final;
+                // duration = Time.fixedDeltaTime;
+              }
+              Debug.Log("break while");
+              // break;
+            }
 
           }
           duration = deltaTime;

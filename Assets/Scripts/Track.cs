@@ -38,7 +38,7 @@ public class Track : MonoBehaviour
   [SerializeField]
   float height;
   [SerializeField]
-  TrackType type;
+  public TrackType type;
 
   public static Slider heightSlider;
   public static Text heightText;
@@ -122,7 +122,7 @@ public class Track : MonoBehaviour
         break;
 
       case TrackType.hill:
-        for (float x = -width / 2f; x <= width / 2f; x += 1f / resolution)
+        for (float x = -width / 2f; x <= width / 2f; x += 0.5f / resolution)
         {
           points.Add(transform.position + new Vector3(x, Hill(x)));
         }
@@ -195,7 +195,9 @@ public class Track : MonoBehaviour
 
   float Hill(float x)
   {
-    return height / (Mathf.Sqrt(0.32f * Mathf.PI)) * Mathf.Exp(-4.9f * 4.9f * x * x / (width * width));
+    float b = 1.4f;
+    float cos = Mathf.Cos(2f * Mathf.PI * x / width);
+    return (Mathf.Sqrt((1f + b * b) / (1f + b * b * cos * cos)) * cos + 1f) / 2f * height;
   }
 
   Vector3 Clothoid(float t)

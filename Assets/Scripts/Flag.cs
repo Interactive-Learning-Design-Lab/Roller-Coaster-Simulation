@@ -8,7 +8,7 @@ public class Flag : MonoBehaviour
   Vector3 closest = new Vector3(-100, 0, 0);
   float smallestDistance = float.PositiveInfinity;
 
-  public Vector3 acceleration;
+  public float acceleration;
   public float velocity;
   public float PE;
   public float KE;
@@ -122,12 +122,12 @@ public class Flag : MonoBehaviour
     {
       
       closest = cart.position;
-      acceleration = cartScript.acceleration;
+      acceleration = cartScript.acceleration.magnitude;
       velocity = cartScript.vel;
-      PE = cartScript.PE;
-      KE = cartScript.KE;
-      TE = cartScript.TE;
-      HE = cartScript.HE;
+      PE = cartScript.d_PE;
+      KE = cartScript.d_KE;
+      TE = cartScript.d_totalEnergy;
+      HE = cartScript.d_HE;
 
       smallestDistance = Vector3.SqrMagnitude(transform.position - cart.position);
 
@@ -136,11 +136,11 @@ public class Flag : MonoBehaviour
     }
     if(TrackManager.selectedFlag == gameObject) {
       velocityText.text = "Velocity: " + velocity.ToString("F2") + " m/s";
-      accelerationText.text = "Acceleration: " + (acceleration.magnitude * Mathf.Sqrt(20f)).ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + Mathf.Max(0,KE).ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + Mathf.Max(0,PE).ToString("F2") + " j";
-    HEText.text = "Thermal Energy: " + Mathf.Max(0,HE).ToString("F2") + " j";
-    TEText.text = "Total Energy: " + Mathf.Max(0,TE).ToString("F2") + " j";
+      accelerationText.text = "Acceleration: " + (acceleration).ToString("F2") + " m/s^2";
+    KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
+    PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";
+    HEText.text = "Thermal Energy: " + HE.ToString("F2") + " j";
+    TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
     }
   }
 

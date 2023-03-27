@@ -111,7 +111,7 @@ public class TrackManager : MonoBehaviour
       if (w > 0 && h > 0)
       {
 
-        selected.setProperties(w, h, (TrackType)type);
+        selected.setProperties(w, h, selected.type);
         selected.Update();
         UpdateTracks();
       }

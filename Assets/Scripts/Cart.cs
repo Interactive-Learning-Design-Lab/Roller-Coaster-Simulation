@@ -40,6 +40,8 @@ public class Cart : MonoBehaviour
   public float d_HE = 0;
   public float d_KE = 0;
   public float d_totalEnergy = 0;
+  public Vector3 lastVel = Vector3.zero;
+  public Vector3 velVector = Vector3.zero;
 
   Text velocityText;
   Text accelerationText;
@@ -61,6 +63,8 @@ public class Cart : MonoBehaviour
   float tolerance = 0.5f;
 
   TrackManager track;
+  private float theta;
+  public Vector3 d_acc;
 
   public void StartSim()
   {
@@ -186,6 +190,8 @@ public class Cart : MonoBehaviour
   float round(float v) {
     return Mathf.Max(0.00f, Mathf.Round(v * 100) / 100f);
   }
+
+  
   // Update is called once per frame
   void FixedUpdate()
   {
@@ -211,17 +217,26 @@ public class Cart : MonoBehaviour
       d_KE = 0;
     }
     
-    // if (d_HE <= 0.01f || d_KE <= 0.01f)
     {
       d_PE = d_totalEnergy - (d_HE + d_KE);
     }
     
-    // float d_velocity = Mathf.Sqrt((2 * d_KE) / mass);
+    Vector3[] cp = track.GetClosestPoints(transform.position);
+    Vector3 netForce = mass * 9.81f * Mathf.Sin(theta) * transform.right;
+    acceleration = netForce / mass;
+    lastVel = velVector;
+    velVector += acceleration * Time.fixedUnscaledDeltaTime;
+    d_acc = (velVector - lastVel)/ Time.fixedUnscaledDeltaTime;
 
-
+    Debug.Log(Vector3.Dot(-transform.up, transform.position + Vector3.right));
+    Debug.DrawLine(transform.position, transform.position - transform.up, Color.red);
+    Debug.DrawLine(transform.position, transform.position + Vector3.right, Color.blue);
+    Debug.DrawLine(transform.position, transform.position + d_acc, Color.green);
+    
 
     velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
-    accelerationText.text = "Acceleration: " + acceleration.magnitude.ToString("F2") + " m/s^2";
+
+    accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
     KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
     PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
     HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
@@ -244,18 +259,18 @@ public class Cart : MonoBehaviour
     PESlider.maxValue = maxVal;
     HESlider.maxValue = maxVal;
 
-
     for (int i = 0; i < 1; i++)
     {
       if (!paused && track.trackPoints.Count > 0 && (!slowDown || vel > 0.01f))
       {
+        // Vector3 initialVelocity = vel * transform.right * (positiveVel ? 1 : -1);
 
         if (transform.position.x >= track.trackPoints[track.trackPoints.Count - 31].x)
         {
           slowDown = true;
         }
         // get rotation
-        float theta = track.GetClosestPointSlope(transform.position);
+        theta = track.GetClosestPointSlope(transform.position);
         transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
 
         if (deltaTime <= 0)
@@ -273,8 +288,10 @@ public class Cart : MonoBehaviour
           int q = 0;
           while (deltaTime < Time.fixedDeltaTime)
           {
+            
             // get prev, current, and next point
             Vector3[] closestPoints = track.GetClosestPoints((Vector3)final);
+
             if (closestPoints[1] == closestPoints[2])
             {
               vel = 0;
@@ -302,7 +319,6 @@ public class Cart : MonoBehaviour
             {
               final = closestPoints[0];
             }
-            float tvel = vel;
             PE = mass * 9.81f * transform.position.y;// * friction;
             if (PE > TE)
             {
@@ -323,25 +339,37 @@ public class Cart : MonoBehaviour
               }
             }
 
-            acceleration = Vector3.right * (tvel-vel)/Time.fixedDeltaTime;
+
             lastValidVel = vel;
 
 
             // find the time it takes to get to the next point
             deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
-            if (q++ > 10) { /* HE += KE; KE = 0;vel = 0*/;
+            duration = deltaTime;
+
+            if (q++ > 100) { /* HE += KE; KE = 0;vel = 0*/;
               if (slowDown)
                 vel = 0;
               else {
-                transform.position = (Vector3) final;
+                if (!positiveVel)
+                {
+                  final = closestPoints[2];
+                }
+                else
+                {
+                  final = closestPoints[0];
+                }
+                // transform.position = (Vector3) final;
+                duration *= 2f * vel;
+                deltaTime *= 2f * vel;
+              Debug.Log("break while");
+                break;
                 // duration = Time.fixedDeltaTime;
               }
-              Debug.Log("break while");
               // break;
             }
 
           }
-          duration = deltaTime;
         }
 
 
@@ -355,6 +383,9 @@ public class Cart : MonoBehaviour
         //   velocity = Vector3.zero;
         //   acceleration = Vector3.zero;
         //   accel = 0;
+        // }
+        // if (Vector3.SqrMagnitude((finalVelocity - initial) / Time.fixedDeltaTime) > float.Epsilon * float.Epsilon) {
+        //   acceleration = (finalVelocity - initial) / Time.fixedDeltaTime / Time.timeScale / 5f; 
         // }
       }
       else if (!paused)

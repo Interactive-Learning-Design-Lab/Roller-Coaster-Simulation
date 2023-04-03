@@ -122,7 +122,7 @@ public class Track : MonoBehaviour
         break;
 
       case TrackType.hill:
-        for (float x = -width / 2f; x <= width / 2f; x += 0.5f / resolution)
+        for (float x = -width / 2f; x <= width / 2f; x += 0.4f / resolution)
         {
           points.Add(transform.position + new Vector3(x, Hill(x)));
         }

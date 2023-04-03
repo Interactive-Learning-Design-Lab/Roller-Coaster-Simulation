@@ -122,7 +122,7 @@ public class Flag : MonoBehaviour
     {
       
       closest = cart.position;
-      acceleration = cartScript.acceleration.magnitude;
+      acceleration = cartScript.d_acc.magnitude;
       velocity = cartScript.vel;
       PE = cartScript.d_PE;
       KE = cartScript.d_KE;

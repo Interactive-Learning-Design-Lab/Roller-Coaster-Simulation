@@ -69,9 +69,10 @@ public class TrackManager : MonoBehaviour
 
     if (GameObject.Find("Cart").GetComponent<Cart>().paused)
     {
-      if (trackCount < 4) {
+      if (trackCount < 4)
+      {
 
-        Track newTrack = Instantiate(trackPrefab, Vector3.zero + Vector3.right * Random.Range(-1f,1f) * 3f, Quaternion.identity).GetComponent<Track>();
+        Track newTrack = Instantiate(trackPrefab, Vector3.zero + Vector3.right * Random.Range(-1f, 1f) * 3f, Quaternion.identity).GetComponent<Track>();
         trackCount++;
         selected = newTrack;
         Track.editPanel.SetActive(true);
@@ -83,16 +84,21 @@ public class TrackManager : MonoBehaviour
         widthText.text = "Width: 2.00 m";
         newTrack.setProperties(2, 2, (TrackType)trackType);
         StartCoroutine(WaitAndUpdate());
-      } else {
+      }
+      else
+      {
         Error("Too many tracks");
       }
 
-    } else {
+    }
+    else
+    {
       Error("Pause to create track");
     }
   }
 
-  IEnumerator WaitAndUpdate() {
+  IEnumerator WaitAndUpdate()
+  {
     yield return new WaitForSecondsRealtime(0.01f);
     UpdateTracks();
   }
@@ -120,11 +126,12 @@ public class TrackManager : MonoBehaviour
 
   public void AddFlag()
   {
-    selectedFlag = Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x + Random.Range(-1f,1f) * 3f, 3 + Random.Range(-1f,1f), -3), Quaternion.identity);
+    selectedFlag = Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x + Random.Range(-1f, 1f) * 3f, 3 + Random.Range(-1f, 1f), -3), Quaternion.identity);
     StartCoroutine(InstantiateFlag(selectedFlag));
   }
 
-  IEnumerator InstantiateFlag(GameObject newFlag) {
+  IEnumerator InstantiateFlag(GameObject newFlag)
+  {
     yield return new WaitForSecondsRealtime(0.01f);
     newFlag.GetComponent<Flag>().Create();
   }
@@ -141,9 +148,10 @@ public class TrackManager : MonoBehaviour
 
   }
 
-  public void DeleteFlag() 
+  public void DeleteFlag()
   {
-    if (selectedFlag != null) {
+    if (selectedFlag != null)
+    {
       selectedFlag.GetComponent<Flag>().Delete();
     }
   }
@@ -246,7 +254,9 @@ public class TrackManager : MonoBehaviour
       GetInstance().lineRenderer.SetPositions(GetInstance().trackPoints.ToArray());
 
       GameObject.Find("Cart").GetComponent<Cart>().RestartSim();
-    } else {
+    }
+    else
+    {
       GameObject.Find("Cart").GetComponent<Cart>().Hide();
     }
   }
@@ -292,13 +302,44 @@ public class TrackManager : MonoBehaviour
     }
   }
 
+  public static string formatVector(Vector3 v)
+  {
+    return v.ToString("F2").Replace('(', '[').Replace(')', ']');
+  }
+
   // Get all track points in scene and add to trackPoints
   public static void GetAllPoints()
   {
     // Find all tracks in scene
     List<GameObject> tracks = new List<GameObject>(GameObject.FindGameObjectsWithTag("Track"));
+    Cart.tracks = "";
     tracks.AddRange(new List<GameObject>(GameObject.FindGameObjectsWithTag("Connector")));
     tracks.Sort((x, y) => x.transform.position.x.CompareTo(y.transform.position.x));
+
+
+    bool isFirst = true;
+
+    foreach (GameObject track in tracks)
+    {
+      if (track.CompareTag("Track"))
+      {
+
+        Track trackScript = track.GetComponent<Track>();
+        LineRenderer lr = track.GetComponent<LineRenderer>();
+        Vector3[] trackPoints = new Vector3[lr.positionCount];
+        lr.GetPositions(trackPoints);
+        Cart.tracks += (isFirst ? "" : ",") + "{" +
+        "\"type\": \"" + trackScript.type.ToString("G") + "\", " +
+        "\"position\": " + formatVector(track.transform.position) + ", " +
+        "\"dimensions\": " + formatVector(track.transform.localScale) + ", " +
+        "\"firstPoint\" :" + formatVector(trackPoints[0]) + ", " +
+        "\"midPoint\" :" + formatVector(trackPoints[(trackPoints.Length - 1) / 2]) + ", " +
+        "\"lastPoint\" :" + formatVector(trackPoints[trackPoints.Length - 2]) + " " +
+        "}";
+        isFirst = false;
+      }
+    }
+
 
     GetInstance().trackPoints = new List<Vector3>();
 
@@ -374,6 +415,8 @@ public class TrackManager : MonoBehaviour
     }
   }
 
+
+
   public static void Error(string err, float duration = 5f)
   {
     GameObject panel = GameObject.Find("ErrorPanel");
@@ -382,10 +425,11 @@ public class TrackManager : MonoBehaviour
     _instance.StartCoroutine(ShowError(err, duration));
   }
 
-  public static IEnumerator ShowError (string err, float duration) {
+  public static IEnumerator ShowError(string err, float duration)
+  {
     yield return new WaitForSecondsRealtime(duration);
     if (duration > float.Epsilon)
-    HideError();
+      HideError();
   }
   public static void HideError()
   {

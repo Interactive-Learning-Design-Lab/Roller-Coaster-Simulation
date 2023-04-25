@@ -42,6 +42,7 @@ public class Cart : MonoBehaviour
   public float d_totalEnergy = 0;
   public Vector3 lastVel = Vector3.zero;
   public Vector3 velVector = Vector3.zero;
+  public static string tracks = "";
 
   Text velocityText;
   Text accelerationText;
@@ -98,7 +99,7 @@ public class Cart : MonoBehaviour
   public void RestartSim()
   {
 
-    
+
     if (track.trackPoints.Count > 0)
     {
       friction = 1;
@@ -156,7 +157,7 @@ public class Cart : MonoBehaviour
   public void SetFriction(float friction)
   {
     this.mu = friction;
-    GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + (mu/100f).ToString("F2");
+    GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + (mu / 100f).ToString("F2");
     RestartSim();
   }
 
@@ -187,17 +188,18 @@ public class Cart : MonoBehaviour
   }
 
 
-  float round(float v) {
+  float round(float v)
+  {
     return Mathf.Max(0.00f, Mathf.Round(v * 100) / 100f);
   }
 
-  
+
   // Update is called once per frame
   void FixedUpdate()
   {
     float d_ReleaseHeight = round(releaseHeight);
     d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
-    
+
     d_PE = round(mass * 9.81f * transform.position.y);
     if (d_PE <= 0.02)
     {
@@ -216,32 +218,53 @@ public class Cart : MonoBehaviour
     {
       d_KE = 0;
     }
-    
+
     {
       d_PE = d_totalEnergy - (d_HE + d_KE);
     }
-    
+
     Vector3[] cp = track.GetClosestPoints(transform.position);
     Vector3 netForce = mass * 9.81f * Mathf.Sin(theta) * transform.right;
     acceleration = netForce / mass;
     lastVel = velVector;
     velVector += acceleration * Time.fixedUnscaledDeltaTime;
-    d_acc = (velVector - lastVel)/ Time.fixedUnscaledDeltaTime;
+    d_acc = (velVector - lastVel) / Time.fixedUnscaledDeltaTime;
 
-    Debug.Log(Vector3.Dot(-transform.up, transform.position + Vector3.right));
+    // Debug.Log(Vector3.Dot(-transform.up, transform.position + Vector3.right));
     Debug.DrawLine(transform.position, transform.position - transform.up, Color.red);
     Debug.DrawLine(transform.position, transform.position + Vector3.right, Color.blue);
     Debug.DrawLine(transform.position, transform.position + d_acc, Color.green);
-    
+
+
 
     velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
-
     accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
     KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
     PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
     HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
     TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2") + " j";
     RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2") + " m";
+
+    bool atEnd = (Vector3.SqrMagnitude(transform.position - track.trackPoints[track.trackPoints.Count - 1]) <= Vector3.kEpsilon * Vector3.kEpsilon);
+    string frontendJSON = "{" +
+                        "\"acceleration\": " + d_acc.magnitude.ToString("F2") +
+                        ", \"velocity\": " + vel.ToString("F2") +
+                        ", \"position\": " + TrackManager.formatVector(transform.position) +
+                        ", \"kinetic_energy\": " + d_KE.ToString("F2") +
+                        ", \"potential_energy\": " + d_PE.ToString("F2") +
+                        ", \"thermal_energy\": " + d_HE.ToString("F2") +
+                        ", \"total_energy\": " + d_totalEnergy.ToString("F2") +
+                        ", \"initial_drop\": " + d_ReleaseHeight.ToString("F2") +
+                        ", \"mass\": " + mass.ToString("F2") +
+                        ", \"friction\": " + (mu / 100f).ToString("F2") +
+                        ", \"at_end\": " + atEnd.ToString().ToLower() +
+                        ", \"tracks\" : [" + tracks + "]" +
+                        "}";
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+      WebGLPluginJS.PassTextParam(frontendJSON);
+#endif
+
     float maxVal = 0;
     if (d_totalEnergy >= 0.1f)
     {
@@ -249,7 +272,9 @@ public class Cart : MonoBehaviour
       KESlider.value = d_KE;
       PESlider.value = d_PE;
       HESlider.value = d_HE;
-    } else {
+    }
+    else
+    {
       KESlider.value = 0;
       PESlider.value = 0;
       HESlider.value = 0;
@@ -288,7 +313,7 @@ public class Cart : MonoBehaviour
           int q = 0;
           while (deltaTime < Time.fixedDeltaTime)
           {
-            
+
             // get prev, current, and next point
             Vector3[] closestPoints = track.GetClosestPoints((Vector3)final);
 
@@ -305,7 +330,7 @@ public class Cart : MonoBehaviour
               tooHigh = true;
               positiveVel = !positiveVel;
             }
-            if (initial.y + 0.03f< releaseHeight && tooHigh)
+            if (initial.y + 0.03f < releaseHeight && tooHigh)
             {
               tooHigh = false;
             }
@@ -347,10 +372,13 @@ public class Cart : MonoBehaviour
             deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
             duration = deltaTime;
 
-            if (q++ > 100) { /* HE += KE; KE = 0;vel = 0*/;
+            if (q++ > 100)
+            { /* HE += KE; KE = 0;vel = 0*/
+              ;
               if (slowDown)
                 vel = 0;
-              else {
+              else
+              {
                 if (!positiveVel)
                 {
                   final = closestPoints[2];
@@ -362,7 +390,7 @@ public class Cart : MonoBehaviour
                 // transform.position = (Vector3) final;
                 duration *= 2f * vel;
                 deltaTime *= 2f * vel;
-              Debug.Log("break while");
+                // Debug.Log("break while");
                 break;
                 // duration = Time.fixedDeltaTime;
               }

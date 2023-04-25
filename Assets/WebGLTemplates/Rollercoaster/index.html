@@ -17,6 +17,12 @@
   </head>
   <body style=" margin: 0; padding: 0; background-color: {{{ BACKGROUND_COLOR }}};">
     <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} style="background: {{{ BACKGROUND_FILENAME ? 'url(\'Build/' + BACKGROUND_FILENAME.replace(/'/g, '%27') + '\') center / cover' : BACKGROUND_COLOR }}}"></canvas>
+    <script>
+      let unityData = null;
+      let receiveMessageFromUnity = (text) => {
+        unityData = JSON.parse(text);
+      }
+    </script>
     <script src="Build/{{{ LOADER_FILENAME }}}"></script>
     <script>
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {

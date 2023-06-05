@@ -37,8 +37,15 @@ public class Flag : MonoBehaviour
   public Color flagColor;
   static int colorIndex = 0;
   public void Reset() {
+
     closest = new Vector3(-100, 0, 0);
     smallestDistance = float.PositiveInfinity;
+    acceleration = 0;
+      velocity = 0;
+      PE = 0;
+      KE = 0;
+      TE = 0;
+      HE = 0;
   }
   // Start is called before the first frame update
   void Start()
@@ -118,7 +125,7 @@ public class Flag : MonoBehaviour
     }
     // Debug.Log(smallestDistance + " "  + Vector3.SqrMagnitude(transform.position - cart.position));
     // Debug.Log(smallestDistance > Vector3.SqrMagnitude(transform.position - cart.position));
-    if (Vector3.SqrMagnitude(transform.position - cart.position) < smallestDistance)
+    if (!cartScript.paused && Vector3.SqrMagnitude(transform.position - cart.position) < smallestDistance)
     {
       
       closest = cart.position;

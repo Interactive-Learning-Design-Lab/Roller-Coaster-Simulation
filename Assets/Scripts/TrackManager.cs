@@ -27,6 +27,21 @@ public class TrackManager : MonoBehaviour
   public static int trackCount;
   public static int errCount = 0;
 
+  [ContextMenu("MyHopeful - CallToSomething")]
+  public void Reset() {
+    foreach (GameObject track in GameObject.FindGameObjectsWithTag("Track"))
+    {
+      Destroy(track);
+    }
+   
+    foreach (GameObject flag in GameObject.FindGameObjectsWithTag("Flag"))
+    {
+      Destroy(flag);
+    } 
+    trackCount = 0;
+    StartCoroutine(WaitAndUpdate());
+  }
+
   public void SetType(int _type)
   {
     type = _type;
@@ -257,6 +272,7 @@ public class TrackManager : MonoBehaviour
     }
     else
     {
+      GetInstance().lineRenderer.positionCount = 0;
       GameObject.Find("Cart").GetComponent<Cart>().Hide();
     }
   }

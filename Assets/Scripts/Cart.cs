@@ -7,7 +7,7 @@ public class Cart : MonoBehaviour
 {
   SpriteRenderer sr;
   [SerializeField]
-  public bool paused = false;
+  public bool paused = true;
   public float mu = .8f;
   public float mass = 1f;
 
@@ -98,6 +98,7 @@ public class Cart : MonoBehaviour
 
   public void RestartSim()
   {
+      PauseSim();
 
 
     if (track.trackPoints.Count > 0)
@@ -123,7 +124,7 @@ public class Cart : MonoBehaviour
       vel = 0f;
       acceleration = Vector3.zero;
       accel = 0f;
-      PauseSim();
+     
       GameObject[] flags = GameObject.FindGameObjectsWithTag("Flag");
       foreach (GameObject flag in flags)
       {
@@ -132,11 +133,49 @@ public class Cart : MonoBehaviour
       float theta = track.GetClosestPointSlope(transform.position);
       transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
       Show();
+    } else {
+      releaseHeight = 0;
     }
+      float d_ReleaseHeight = round(releaseHeight);
+      d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
+      d_PE = d_totalEnergy;
+      d_acc = Vector3.zero;
+      d_KE = 0f;
+      d_HE = 0f;
+
+    
+      velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
+      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
+      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2") + " j";
+      RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2") + " m";
+
+      float maxVal = 0;
+      if (d_totalEnergy >= 0.1f)
+      {
+        maxVal = d_totalEnergy;
+        PESlider.maxValue = maxVal;
+        PESlider.value = d_PE;
+      }
+      else
+      {
+        PESlider.maxValue = maxVal;
+        PESlider.value = 0;
+        maxVal = 1f;
+      }
+      KESlider.value = 0;
+      HESlider.value = 0;
+
+      KESlider.maxValue = 1f;
+      HESlider.maxValue = 1f;
+    
   }
 
   public void Hide()
   {
+    PauseSim();
     GameObject.Find("Wall").GetComponent<SpriteRenderer>().enabled = false;
     sr.enabled = false;
   }
@@ -197,92 +236,99 @@ public class Cart : MonoBehaviour
   // Update is called once per frame
   void FixedUpdate()
   {
-    float d_ReleaseHeight = round(releaseHeight);
-    d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
-
-    d_PE = round(mass * 9.81f * transform.position.y);
-    if (d_PE <= 0.02)
+    if (!paused)
     {
-      d_PE = 0;
+      float d_ReleaseHeight = round(releaseHeight);
+      d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
+
+      d_PE = round(mass * 9.81f * transform.position.y);
+      if (d_PE <= 0.02)
+      {
+        d_PE = 0;
+      }
+
+      d_HE = round(HE / (initialTotal - PE) * (d_totalEnergy - d_PE));
+      d_KE = round(d_totalEnergy - (d_PE + d_HE));
+
+      if (d_HE != d_HE || d_HE <= 0.02f)
+      {
+        d_HE = 0;
+      }
+
+      if (d_KE != d_KE || d_KE <= 0.02f)
+      {
+        d_KE = 0;
+      }
+
+      {
+        d_PE = d_totalEnergy - (d_HE + d_KE);
+      }
+
+      Vector3[] cp = track.GetClosestPoints(transform.position);
+      Vector3 netForce = mass * 9.81f * Mathf.Sin(theta) * transform.right;
+      acceleration = netForce / mass;
+      lastVel = velVector;
+      velVector += acceleration * Time.fixedUnscaledDeltaTime;
+      d_acc = (velVector - lastVel) / Time.fixedUnscaledDeltaTime;
+
+      // Debug.Log(Vector3.Dot(-transform.up, transform.position + Vector3.right));
+      Debug.DrawLine(transform.position, transform.position - transform.up, Color.red);
+      Debug.DrawLine(transform.position, transform.position + Vector3.right, Color.blue);
+      Debug.DrawLine(transform.position, transform.position + d_acc, Color.green);
+
+
+
+      velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
+      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
+      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2") + " j";
+      RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2") + " m";
+
+      float maxVal = 0;
+      if (d_totalEnergy >= 0.1f)
+      {
+        maxVal = d_totalEnergy;
+        KESlider.value = d_KE;
+        PESlider.value = d_PE;
+        HESlider.value = d_HE;
+      }
+      else
+      {
+        KESlider.value = 0;
+        PESlider.value = 0;
+        HESlider.value = 0;
+        maxVal = 1f;
+      }
+
+      KESlider.maxValue = maxVal;
+      PESlider.maxValue = maxVal;
+      HESlider.maxValue = maxVal;
     }
-
-    d_HE = round(HE / (initialTotal - PE) * (d_totalEnergy - d_PE));
-    d_KE = round(d_totalEnergy - (d_PE + d_HE));
-
-    if (d_HE != d_HE || d_HE <= 0.02f)
+    // else if()
     {
-      d_HE = 0;
+      
     }
-
-    if (d_KE != d_KE || d_KE <= 0.02f)
-    {
-      d_KE = 0;
-    }
-
-    {
-      d_PE = d_totalEnergy - (d_HE + d_KE);
-    }
-
-    Vector3[] cp = track.GetClosestPoints(transform.position);
-    Vector3 netForce = mass * 9.81f * Mathf.Sin(theta) * transform.right;
-    acceleration = netForce / mass;
-    lastVel = velVector;
-    velVector += acceleration * Time.fixedUnscaledDeltaTime;
-    d_acc = (velVector - lastVel) / Time.fixedUnscaledDeltaTime;
-
-    // Debug.Log(Vector3.Dot(-transform.up, transform.position + Vector3.right));
-    Debug.DrawLine(transform.position, transform.position - transform.up, Color.red);
-    Debug.DrawLine(transform.position, transform.position + Vector3.right, Color.blue);
-    Debug.DrawLine(transform.position, transform.position + d_acc, Color.green);
-
-
-
-    velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
-    accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
-    HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
-    TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2") + " j";
-    RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2") + " m";
-
-    bool atEnd = (Vector3.SqrMagnitude(transform.position - track.trackPoints[track.trackPoints.Count - 1]) <= Vector3.kEpsilon * Vector3.kEpsilon);
-    string frontendJSON = "{" +
-                        "\"acceleration\": " + d_acc.magnitude.ToString("F2") +
-                        ", \"velocity\": " + vel.ToString("F2") +
-                        ", \"position\": " + TrackManager.formatVector(transform.position) +
-                        ", \"kinetic_energy\": " + d_KE.ToString("F2") +
-                        ", \"potential_energy\": " + d_PE.ToString("F2") +
-                        ", \"thermal_energy\": " + d_HE.ToString("F2") +
-                        ", \"total_energy\": " + d_totalEnergy.ToString("F2") +
-                        ", \"initial_drop\": " + d_ReleaseHeight.ToString("F2") +
-                        ", \"mass\": " + mass.ToString("F2") +
-                        ", \"friction\": " + (mu / 100f).ToString("F2") +
-                        ", \"at_end\": " + atEnd.ToString().ToLower() +
-                        ", \"tracks\" : [" + tracks + "]" +
-                        "}";
-
 #if UNITY_WEBGL && !UNITY_EDITOR
+      bool atEnd = (Vector3.SqrMagnitude(transform.position - track.trackPoints[track.trackPoints.Count - 1]) <= Vector3.kEpsilon * Vector3.kEpsilon);
+      string frontendJSON = "{" +
+                          "\"acceleration\": " + d_acc.magnitude.ToString("F2") +
+                          ", \"velocity\": " + vel.ToString("F2") +
+                          ", \"position\": " + TrackManager.formatVector(transform.position) +
+                          ", \"kinetic_energy\": " + d_KE.ToString("F2") +
+                          ", \"potential_energy\": " + d_PE.ToString("F2") +
+                          ", \"thermal_energy\": " + d_HE.ToString("F2") +
+                          ", \"total_energy\": " + d_totalEnergy.ToString("F2") +
+                          ", \"initial_drop\": " + d_ReleaseHeight.ToString("F2") +
+                          ", \"mass\": " + mass.ToString("F2") +
+                          ", \"friction\": " + (mu / 100f).ToString("F2") +
+                          ", \"at_end\": " + atEnd.ToString().ToLower() +
+                          ", \"tracks\" : [" + tracks + "]" +
+                          "}";
       WebGLPluginJS.PassTextParam(frontendJSON);
 #endif
 
-    float maxVal = 0;
-    if (d_totalEnergy >= 0.1f)
-    {
-      maxVal = d_totalEnergy;
-      KESlider.value = d_KE;
-      PESlider.value = d_PE;
-      HESlider.value = d_HE;
-    }
-    else
-    {
-      KESlider.value = 0;
-      PESlider.value = 0;
-      HESlider.value = 0;
-      maxVal = 1f;
-    }
-    KESlider.maxValue = maxVal;
-    PESlider.maxValue = maxVal;
-    HESlider.maxValue = maxVal;
 
     for (int i = 0; i < 1; i++)
     {
@@ -345,7 +391,7 @@ public class Cart : MonoBehaviour
               final = closestPoints[0];
             }
             PE = mass * 9.81f * transform.position.y;// * friction;
-            if (PE > TE)
+            if (PE > TE && !slowDown)
             {
               // tooHigh = true;
               vel = lastValidVel;
@@ -355,12 +401,25 @@ public class Cart : MonoBehaviour
             }
             else
             {
-              KE = TE - PE;
-              vel = Mathf.Sqrt((2 * KE) / mass);
+
               if (slowDown && !tooHigh)
               {
-                TE = PE + KE - mu * 4 * vel * Time.fixedDeltaTime;
+                // TE = PE + KE - mu * 4 * vel * Time.fixedDeltaTime;
                 HE += mu * 4 * vel * Time.fixedDeltaTime;
+                // TE = PE + KE - HE;
+              }
+              KE = TE - (PE + HE);
+              if (KE <= 0)
+              {
+                KE = 0;
+                vel = 0;
+                HE = TE - PE;
+                PauseSim();
+
+              }
+              else
+              {
+                vel = Mathf.Sqrt((2 * KE) / mass);
               }
             }
 
@@ -420,9 +479,10 @@ public class Cart : MonoBehaviour
       {
 
         PauseSim();
-        HE += KE;
-        KE = 0;
-        vel = 0;
+
+        // HE += KE;
+        // KE = 0;
+        // vel = 0;
       }
     }
   }

@@ -236,9 +236,9 @@ public class Cart : MonoBehaviour
   // Update is called once per frame
   void FixedUpdate()
   {
+    float d_ReleaseHeight = round(releaseHeight);
     if (!paused)
     {
-      float d_ReleaseHeight = round(releaseHeight);
       d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
 
       d_PE = round(mass * 9.81f * transform.position.y);

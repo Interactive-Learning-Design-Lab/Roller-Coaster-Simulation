@@ -242,7 +242,7 @@ public class Cart : MonoBehaviour
       d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
 
       d_PE = round(mass * 9.81f * transform.position.y);
-      if (d_PE <= 0.02)
+      if (transform.position.y <= 0.02f)
       {
         d_PE = 0;
       }
@@ -414,6 +414,32 @@ public class Cart : MonoBehaviour
                 KE = 0;
                 vel = 0;
                 HE = TE - PE;
+
+        
+        d_acc = Vector3.zero;
+        d_HE += d_KE;
+        d_KE = 0;
+        
+        velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
+      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
+
+            float maxVal = 0;
+      if (d_totalEnergy >= 0.1f)
+      {
+        maxVal = d_totalEnergy;
+      }
+      else
+      {
+        maxVal = 1f;
+      }
+      KESlider.value = d_KE;
+      HESlider.value = d_HE;
+
+      KESlider.maxValue = maxVal;
+      HESlider.maxValue = maxVal;
                 PauseSim();
 
               }
@@ -480,9 +506,34 @@ public class Cart : MonoBehaviour
 
         PauseSim();
 
-        // HE += KE;
-        // KE = 0;
-        // vel = 0;
+        HE += KE;
+        KE = 0;
+        vel = 0;
+        
+        d_acc = Vector3.zero;
+        d_HE += d_KE;
+        d_KE = 0;
+        
+        velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
+      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
+
+            float maxVal = 0;
+      if (d_totalEnergy >= 0.1f)
+      {
+        maxVal = d_totalEnergy;
+      }
+      else
+      {
+        maxVal = 1f;
+      }
+      KESlider.value = d_KE;
+      HESlider.value = d_HE;
+
+      KESlider.maxValue = maxVal;
+      HESlider.maxValue = maxVal;
       }
     }
   }

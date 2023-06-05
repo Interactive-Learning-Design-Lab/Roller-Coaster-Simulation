@@ -21,11 +21,8 @@ public class Flag : MonoBehaviour
   public static Text KEText;
   public static Text TEText;
   public static Text HEText;
-  public static Image UIFlag = null;
-  public static RectTransform flagPanel = null;
-  public static GameObject deleteButton = null;
   public static GameObject flagValues = null;
-  
+
   // Drag & pan helper vars
   Plane dragPlane;
   Vector3 offset;
@@ -36,48 +33,46 @@ public class Flag : MonoBehaviour
 
   public Color flagColor;
   static int colorIndex = 0;
-  public void Reset() {
+  public void Reset()
+  {
 
     closest = new Vector3(-100, 0, 0);
     smallestDistance = float.PositiveInfinity;
     acceleration = 0;
-      velocity = 0;
-      PE = 0;
-      KE = 0;
-      TE = 0;
-      HE = 0;
+    velocity = 0;
+    PE = 0;
+    KE = 0;
+    TE = 0;
+    HE = 0;
   }
   // Start is called before the first frame update
   void Start()
   {
-    if (UIFlag == null) {
-      UIFlag = GameObject.Find("UI Flag").GetComponent<Image>();
-    }
-    if (deleteButton == null) {
-      deleteButton = GameObject.Find("Delete Flag");
-      deleteButton.SetActive(false);
-    }
-    if (flagPanel == null) {
-      flagPanel = GameObject.Find("Flags").GetComponent<RectTransform>();
-    }
+
     flagColor = Color.HSVToRGB((++colorIndex % 12f) / 12f, .7f, .9f);
     GetComponent<SpriteRenderer>().color = flagColor;
-    if (velocityText == null) {
+    if (velocityText == null)
+    {
       velocityText = GameObject.Find("Flag Velocity").GetComponent<Text>();
     }
-    if (accelerationText == null) {
+    if (accelerationText == null)
+    {
       accelerationText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
     }
-    if (KEText == null) {
+    if (KEText == null)
+    {
       KEText = GameObject.Find("Flag KE").GetComponent<Text>();
     }
-    if (PEText == null) {
+    if (PEText == null)
+    {
       PEText = GameObject.Find("Flag PE").GetComponent<Text>();
     }
-    if (TEText == null) {
+    if (TEText == null)
+    {
       TEText = GameObject.Find("Flag TE").GetComponent<Text>();
     }
-    if (HEText == null) {
+    if (HEText == null)
+    {
       HEText = GameObject.Find("Flag HE").GetComponent<Text>();
     }
 
@@ -85,27 +80,26 @@ public class Flag : MonoBehaviour
 
     cartScript = cart.GetComponent<Cart>();
     mainCam = Camera.main;
-    if (flagValues == null) {
+    if (flagValues == null)
+    {
       flagValues = GameObject.Find("Flag Values");
       flagValues.SetActive(false);
     }
     // hitbox = GetComponent<BoxCollider2D>();
   }
 
-  public void Create() {
-    UIFlag.enabled = true;
-    UIFlag.color = flagColor;
-    deleteButton.SetActive(true);
-    flagValues.SetActive(true);
-    flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 110);
+  public void Create()
+  {
+
+    flagValues.SetActive(false);
+
   }
 
-  public void Delete() {
-    deleteButton.SetActive(false);
+  public void Delete()
+  {
+
     flagValues.SetActive(false);
-    flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 230);
     TrackManager.selectedFlag = null;
-    UIFlag.enabled = false;
     // velocityText.text = "Velocity: ";
     // accelerationText.text = "Acceleration: ";
     // KEText.text = "Kinetic Energy: ";
@@ -114,20 +108,23 @@ public class Flag : MonoBehaviour
     // TEText.text = "Total Energy: ";
     Destroy(gameObject);
   }
+
   // Update is called once per frame
   void Update()
   {
-    if (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Delete)) {
-      if (TrackManager.selectedFlag == gameObject){
+    if (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Delete))
+    {
+      if (TrackManager.selectedFlag == gameObject)
+      {
         Delete();
       }
-      
+
     }
     // Debug.Log(smallestDistance + " "  + Vector3.SqrMagnitude(transform.position - cart.position));
     // Debug.Log(smallestDistance > Vector3.SqrMagnitude(transform.position - cart.position));
     if (!cartScript.paused && Vector3.SqrMagnitude(transform.position - cart.position) < smallestDistance)
     {
-      
+
       closest = cart.position;
       acceleration = cartScript.d_acc.magnitude;
       velocity = cartScript.vel;
@@ -141,25 +138,24 @@ public class Flag : MonoBehaviour
 
 
     }
-    if(TrackManager.selectedFlag == gameObject) {
+    if (TrackManager.selectedFlag == gameObject)
+    {
       velocityText.text = "Velocity: " + velocity.ToString("F2") + " m/s";
       accelerationText.text = "Acceleration: " + (acceleration).ToString("F2") + " m/s^2";
-    KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
-    PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";
-    HEText.text = "Thermal Energy: " + HE.ToString("F2") + " j";
-    TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
+      KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
+      PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";
+      HEText.text = "Thermal Energy: " + HE.ToString("F2") + " j";
+      TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
     }
   }
 
   void OnMouseDown()
   {
-    deleteButton.SetActive(true);
     flagValues.SetActive(true);
-    flagPanel.offsetMin = new Vector2(flagPanel.offsetMin.x, 110);
+      flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
+
 
     TrackManager.selectedFlag = gameObject;
-    UIFlag.enabled = true;
-    UIFlag.color = flagColor;
     dragPlane = new Plane(mainCam.transform.forward, transform.position);
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 
@@ -168,8 +164,21 @@ public class Flag : MonoBehaviour
     offset = transform.position - camRay.GetPoint(planeDist);
   }
 
+  // void OnMouseUp()
+  // {
+  //   if (TrackManager.selectedFlag == gameObject)
+  //     flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
+  //   // else if ()
+  //   // {
+
+  //   // }
+
+  // }
+
   void OnMouseDrag()
   {
+      flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
+
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 
     float planeDist;

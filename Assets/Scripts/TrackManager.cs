@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class TrackManager : MonoBehaviour
 {
@@ -151,6 +152,19 @@ public class TrackManager : MonoBehaviour
     newFlag.GetComponent<Flag>().Create();
   }
 
+public void Exit() {
+  Flag.flagValues.SetActive(false);
+  selectedFlag = null;
+}
+
+// void Update()
+// {
+//   if(selectedFlag != null && Vector2.Distance(selectedFlag.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition)) > 1f) {
+
+//     Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+//     Exit();
+//   }
+// }
   public void Delete()
   {
     if (selected != null)

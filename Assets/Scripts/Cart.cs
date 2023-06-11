@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -144,13 +145,13 @@ public class Cart : MonoBehaviour
       d_HE = 0f;
 
     
-      velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
-      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
-      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
-      PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
-      HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
-      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2") + " j";
-      RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2") + " m";
+      velocityText.text = "Velocity: " + vel.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
+      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
       float maxVal = 0;
       if (d_totalEnergy >= 0.1f)
@@ -189,14 +190,14 @@ public class Cart : MonoBehaviour
   public void SetMass(float mass)
   {
     this.mass = mass;
-    GameObject.Find("MText").GetComponent<Text>().text = "Mass: " + mass.ToString("F2") + " kg";
+    GameObject.Find("MText").GetComponent<Text>().text = "Mass: " + mass.ToString("F2", CultureInfo.InvariantCulture) + " kg";
     RestartSim();
   }
 
   public void SetFriction(float friction)
   {
     this.mu = friction;
-    GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + (mu / 100f).ToString("F2");
+    GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + (mu / 100f).ToString("F2", CultureInfo.InvariantCulture);
     RestartSim();
   }
 
@@ -278,13 +279,13 @@ public class Cart : MonoBehaviour
 
 
 
-      velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
-      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
-      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
-      PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
-      HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
-      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2") + " j";
-      RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2") + " m";
+      velocityText.text = "Velocity: " + vel.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
+      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
       float maxVal = 0;
       if (d_totalEnergy >= 0.1f)
@@ -313,16 +314,16 @@ public class Cart : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
       bool atEnd = (Vector3.SqrMagnitude(transform.position - track.trackPoints[track.trackPoints.Count - 1]) <= Vector3.kEpsilon * Vector3.kEpsilon);
       string frontendJSON = "{" +
-                          "\"acceleration\": " + d_acc.magnitude.ToString("F2") +
-                          ", \"velocity\": " + vel.ToString("F2") +
+                          "\"acceleration\": " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) +
+                          ", \"velocity\": " + vel.ToString("F2", CultureInfo.InvariantCulture) +
                           ", \"position\": " + TrackManager.formatVector(transform.position) +
-                          ", \"kinetic_energy\": " + d_KE.ToString("F2") +
-                          ", \"potential_energy\": " + d_PE.ToString("F2") +
-                          ", \"thermal_energy\": " + d_HE.ToString("F2") +
-                          ", \"total_energy\": " + d_totalEnergy.ToString("F2") +
-                          ", \"initial_drop\": " + d_ReleaseHeight.ToString("F2") +
-                          ", \"mass\": " + mass.ToString("F2") +
-                          ", \"friction\": " + (mu / 100f).ToString("F2") +
+                          ", \"kinetic_energy\": " + d_KE.ToString("F2", CultureInfo.InvariantCulture) +
+                          ", \"potential_energy\": " + d_PE.ToString("F2", CultureInfo.InvariantCulture) +
+                          ", \"thermal_energy\": " + d_HE.ToString("F2", CultureInfo.InvariantCulture) +
+                          ", \"total_energy\": " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) +
+                          ", \"initial_drop\": " + d_ReleaseHeight.ToString("F2", CultureInfo.InvariantCulture) +
+                          ", \"mass\": " + mass.ToString("F2", CultureInfo.InvariantCulture) +
+                          ", \"friction\": " + (mu / 100f).ToString("F2", CultureInfo.InvariantCulture) +
                           ", \"at_end\": " + atEnd.ToString().ToLower() +
                           ", \"tracks\" : [" + tracks + "]" +
                           "}";
@@ -420,11 +421,11 @@ public class Cart : MonoBehaviour
         d_HE += d_KE;
         d_KE = 0;
         
-        velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
-      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
-      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
-      PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
-      HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
+        velocityText.text = "Velocity: " + vel.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
+      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
 
             float maxVal = 0;
       if (d_totalEnergy >= 0.1f)
@@ -514,11 +515,11 @@ public class Cart : MonoBehaviour
         d_HE += d_KE;
         d_KE = 0;
         
-        velocityText.text = "Velocity: " + vel.ToString("F2") + " m/s";
-      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2") + " m/s^2";
-      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2") + " j";
-      PEText.text = "Potential Energy: " + d_PE.ToString("F2") + " j";
-      HEText.text = "Thermal Energy: " + d_HE.ToString("F2") + " j";
+        velocityText.text = "Velocity: " + vel.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
+      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
 
             float maxVal = 0;
       if (d_totalEnergy >= 0.1f)

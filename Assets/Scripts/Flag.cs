@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -140,12 +141,12 @@ public class Flag : MonoBehaviour
     }
     if (TrackManager.selectedFlag == gameObject)
     {
-      velocityText.text = "Velocity: " + velocity.ToString("F2") + " m/s";
-      accelerationText.text = "Acceleration: " + (acceleration).ToString("F2") + " m/s^2";
-      KEText.text = "Kinetic Energy: " + KE.ToString("F2") + " j";
-      PEText.text = "Potential Energy: " + PE.ToString("F2") + " j";
-      HEText.text = "Thermal Energy: " + HE.ToString("F2") + " j";
-      TEText.text = "Total Energy: " + TE.ToString("F2") + " j";
+      velocityText.text = "Velocity: " + velocity.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
+      accelerationText.text = "Acceleration: " + (acceleration).ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+      KEText.text = "Kinetic Energy: " + KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      PEText.text = "Potential Energy: " + PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      HEText.text = "Thermal Energy: " + HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      TEText.text = "Total Energy: " + TE.ToString("F2", CultureInfo.InvariantCulture) + " j";
     }
   }
 

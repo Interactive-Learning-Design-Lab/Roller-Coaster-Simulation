@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using System.Globalization;
+
 
 public class TrackManager : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class TrackManager : MonoBehaviour
 
   [ContextMenu("MyHopeful - CallToSomething")]
   public void Reset() {
+    Exit();
     foreach (GameObject track in GameObject.FindGameObjectsWithTag("Track"))
     {
       Destroy(track);
@@ -67,14 +69,14 @@ public class TrackManager : MonoBehaviour
   public void SetHeight(float _height)
   {
     height = _height + "";
-    heightText.text = "Height: " + (_height).ToString("F2") + " m";
+    heightText.text = "Height: " + (_height).ToString("F2", CultureInfo.InvariantCulture) + " m";
     EditTrack();
   }
 
   public void setWidth(float _width)
   {
     width = _width + "";
-    widthText.text = "Width: " + (_width).ToString("F2") + " m";
+    widthText.text = "Width: " + (_width).ToString("F2", CultureInfo.InvariantCulture) + " m";
     EditTrack();
   }
 
@@ -123,8 +125,8 @@ public class TrackManager : MonoBehaviour
   {
     if (selected != null)
     {
-      // height = GameObject.Find("Height Input").GetComponent<Slider>().value.ToString("F2");
-      // width = GameObject.Find("Width Input").GetComponent<Slider>().value.ToString("F2");
+      // height = GameObject.Find("Height Input").GetComponent<Slider>().value.ToString("F2", CultureInfo.InvariantCulture);
+      // width = GameObject.Find("Width Input").GetComponent<Slider>().value.ToString("F2", CultureInfo.InvariantCulture);
       // type = GameObject.Find("Type").GetComponent<Dropdown>().value;
 
       float w = float.Parse(width);
@@ -334,7 +336,7 @@ public void Exit() {
 
   public static string formatVector(Vector3 v)
   {
-    return v.ToString("F2").Replace('(', '[').Replace(')', ']');
+    return v.ToString("F2", CultureInfo.InvariantCulture).Replace('(', '[').Replace(')', ']');
   }
 
   // Get all track points in scene and add to trackPoints

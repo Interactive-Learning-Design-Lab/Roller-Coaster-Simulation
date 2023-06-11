@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
+using System.Globalization;
 using UnityEngine.UI;
 using System;
 
@@ -252,8 +252,8 @@ public class Track : MonoBehaviour
 
       heightSlider.value = height;
       widthSlider.value = width;
-      heightText.text = "Height: " + height.ToString("F2") + " m";
-      widthText.text = "Width: " + width.ToString("F2") + " m";
+      heightText.text = "Height: " + height.ToString("F2", CultureInfo.InvariantCulture) + " m";
+      widthText.text = "Width: " + width.ToString("F2", CultureInfo.InvariantCulture) + " m";
       
 
       dragPlane = new Plane(mainCam.transform.forward, transform.position);

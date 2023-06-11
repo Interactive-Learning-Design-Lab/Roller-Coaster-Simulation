@@ -262,6 +262,8 @@ public class Track : MonoBehaviour
       float planeDist;
       dragPlane.Raycast(camRay, out planeDist);
       offset = transform.position - camRay.GetPoint(planeDist);
+    } else {
+      TrackManager.Error("Pause to select track");
     }
   }
 
@@ -278,6 +280,8 @@ public class Track : MonoBehaviour
       GeneratePoints();
       Render();
       TrackManager.UpdateTracks();
+    } else {
+      TrackManager.Error("Pause to select track");
     }
   }
 

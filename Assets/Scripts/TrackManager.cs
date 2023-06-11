@@ -9,6 +9,7 @@ public class TrackManager : MonoBehaviour
 {
   public List<Vector3> trackPoints = new List<Vector3>();
   LineRenderer lineRenderer;
+  Cart cart;
 
   [SerializeField]
   public GameObject connectorPrefab;
@@ -28,19 +29,21 @@ public class TrackManager : MonoBehaviour
   public static GameObject selectedFlag;
   public static int trackCount;
   public static int errCount = 0;
+  static Coroutine errCoroutine = null;
 
   [ContextMenu("MyHopeful - CallToSomething")]
-  public void Reset() {
+  public void Reset()
+  {
     Exit();
     foreach (GameObject track in GameObject.FindGameObjectsWithTag("Track"))
     {
       Destroy(track);
     }
-   
+
     foreach (GameObject flag in GameObject.FindGameObjectsWithTag("Flag"))
     {
       Destroy(flag);
-    } 
+    }
     trackCount = 0;
     StartCoroutine(WaitAndUpdate());
   }
@@ -85,7 +88,7 @@ public class TrackManager : MonoBehaviour
   public void CreateTrack(int trackType)
   {
 
-    if (GameObject.Find("Cart").GetComponent<Cart>().paused)
+    if (cart.paused)
     {
       if (trackCount < 4)
       {
@@ -144,8 +147,15 @@ public class TrackManager : MonoBehaviour
 
   public void AddFlag()
   {
-    selectedFlag = Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x + Random.Range(-1f, 1f) * 3f, 3 + Random.Range(-1f, 1f), -3), Quaternion.identity);
-    StartCoroutine(InstantiateFlag(selectedFlag));
+    if (cart.paused && cart.atStart)
+    {
+      selectedFlag = Instantiate(flagPrefab, new Vector3(Camera.main.transform.position.x + Random.Range(-1f, 1f) * 3f, 3 + Random.Range(-1f, 1f), -3), Quaternion.identity);
+      StartCoroutine(InstantiateFlag(selectedFlag));
+    }
+    else
+    {
+      Error((cart.paused ? "Restart simulation" : "Pause") + " to add flag");
+    }
   }
 
   IEnumerator InstantiateFlag(GameObject newFlag)
@@ -154,19 +164,20 @@ public class TrackManager : MonoBehaviour
     newFlag.GetComponent<Flag>().Create();
   }
 
-public void Exit() {
-  Flag.flagValues.SetActive(false);
-  selectedFlag = null;
-}
+  public void Exit()
+  {
+    Flag.flagValues.SetActive(false);
+    selectedFlag = null;
+  }
 
-// void Update()
-// {
-//   if(selectedFlag != null && Vector2.Distance(selectedFlag.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition)) > 1f) {
+  // void Update()
+  // {
+  //   if(selectedFlag != null && Vector2.Distance(selectedFlag.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition)) > 1f) {
 
-//     Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-//     Exit();
-//   }
-// }
+  //     Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+  //     Exit();
+  //   }
+  // }
   public void Delete()
   {
     if (selected != null)
@@ -256,6 +267,7 @@ public void Exit() {
 
   void Start()
   {
+    cart = GameObject.Find("Cart").GetComponent<Cart>();
     trackCount = GameObject.FindGameObjectsWithTag("Track").Length;
     lineRenderer = GetComponent<LineRenderer>();
 
@@ -454,7 +466,11 @@ public void Exit() {
     GameObject panel = GameObject.Find("ErrorPanel");
     panel.GetComponent<Image>().enabled = true;
     panel.transform.GetChild(0).GetComponent<Text>().text = err;
-    _instance.StartCoroutine(ShowError(err, duration));
+
+    if (errCoroutine != null)
+      _instance.StopCoroutine(errCoroutine);
+
+    errCoroutine = _instance.StartCoroutine(ShowError(err, duration));
   }
 
   public static IEnumerator ShowError(string err, float duration)

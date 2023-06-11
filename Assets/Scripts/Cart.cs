@@ -9,6 +9,7 @@ public class Cart : MonoBehaviour
   SpriteRenderer sr;
   [SerializeField]
   public bool paused = true;
+  public bool atStart = true;
   public float mu = .8f;
   public float mass = 1f;
 
@@ -73,6 +74,8 @@ public class Cart : MonoBehaviour
     pauseButton.SetActive(true);
     startButton.SetActive(false);
     paused = false;
+    track.Exit();
+    TrackManager.HideError();
   }
 
   public void PauseSim()
@@ -80,6 +83,7 @@ public class Cart : MonoBehaviour
     pauseButton.SetActive(false);
     startButton.SetActive(true);
     paused = true;
+    TrackManager.HideError();
   }
 
   public void StepSim()
@@ -100,7 +104,7 @@ public class Cart : MonoBehaviour
   public void RestartSim()
   {
       PauseSim();
-
+    atStart = true;
 
     if (track.trackPoints.Count > 0)
     {
@@ -240,6 +244,8 @@ public class Cart : MonoBehaviour
     float d_ReleaseHeight = round(releaseHeight);
     if (!paused)
     {
+      atStart = false;
+
       d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
 
       d_PE = round(mass * 9.81f * transform.position.y);

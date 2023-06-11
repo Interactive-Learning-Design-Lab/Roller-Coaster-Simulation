@@ -27,6 +27,7 @@ public class Flag : MonoBehaviour
   // Drag & pan helper vars
   Plane dragPlane;
   Vector3 offset;
+  private Vector3 dragStart;
   Camera mainCam;
 
   Transform cart;
@@ -91,8 +92,8 @@ public class Flag : MonoBehaviour
 
   public void Create()
   {
-
-    flagValues.SetActive(false);
+    if (cartScript.paused)
+      flagValues.SetActive(false);
 
   }
 
@@ -110,6 +111,19 @@ public class Flag : MonoBehaviour
     Destroy(gameObject);
   }
 
+  void OnDrawGizmos()
+  {
+    try
+    {
+      Gizmos.DrawLine(transform.position, cart.position);
+
+    }
+    catch (System.Exception)
+    {
+
+    }
+  }
+
   // Update is called once per frame
   void Update()
   {
@@ -123,22 +137,23 @@ public class Flag : MonoBehaviour
     }
     // Debug.Log(smallestDistance + " "  + Vector3.SqrMagnitude(transform.position - cart.position));
     // Debug.Log(smallestDistance > Vector3.SqrMagnitude(transform.position - cart.position));
-    if (!cartScript.paused && Vector3.SqrMagnitude(transform.position - cart.position) < smallestDistance)
+    float dist = Vector3.SqrMagnitude(transform.position + 3 * Vector3.forward - cart.position);
+    if (!cartScript.paused && dist < smallestDistance)
     {
 
-      closest = cart.position;
-      acceleration = cartScript.d_acc.magnitude;
-      velocity = cartScript.vel;
-      PE = cartScript.d_PE;
-      KE = cartScript.d_KE;
-      TE = cartScript.d_totalEnergy;
-      HE = cartScript.d_HE;
-
-      smallestDistance = Vector3.SqrMagnitude(transform.position - cart.position);
-
-
-
+      if (Mathf.Sqrt(dist) < .2f)
+      {
+        closest = cart.position;
+        acceleration = cartScript.d_acc.magnitude;
+        velocity = cartScript.vel;
+        PE = cartScript.d_PE;
+        KE = cartScript.d_KE;
+        TE = cartScript.d_totalEnergy;
+        HE = cartScript.d_HE;
+      }
+      smallestDistance = dist;
     }
+
     if (TrackManager.selectedFlag == gameObject)
     {
       velocityText.text = "Velocity: " + velocity.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
@@ -152,39 +167,44 @@ public class Flag : MonoBehaviour
 
   void OnMouseDown()
   {
-    flagValues.SetActive(true);
-      flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
-
-
-    TrackManager.selectedFlag = gameObject;
     dragPlane = new Plane(mainCam.transform.forward, transform.position);
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 
     float planeDist;
     dragPlane.Raycast(camRay, out planeDist);
     offset = transform.position - camRay.GetPoint(planeDist);
+    dragStart = camRay.GetPoint(planeDist);
+    if (cartScript.paused)
+    {
+      flagValues.SetActive(true);
+      flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
+
+
+      TrackManager.selectedFlag = gameObject;
+    }
+    else
+    {
+      TrackManager.Error("Pause to select flag");
+    }
   }
-
-  // void OnMouseUp()
-  // {
-  //   if (TrackManager.selectedFlag == gameObject)
-  //     flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
-  //   // else if ()
-  //   // {
-
-  //   // }
-
-  // }
 
   void OnMouseDrag()
   {
-      flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
+
+    flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
 
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 
     float planeDist;
     dragPlane.Raycast(camRay, out planeDist);
-    transform.position = new Vector3(camRay.GetPoint(planeDist).x + offset.x, camRay.GetPoint(planeDist).y + offset.y, camRay.GetPoint(planeDist).z + offset.z);
-
+    if (cartScript.paused && cartScript.atStart)
+    {
+      transform.position = new Vector3(camRay.GetPoint(planeDist).x + offset.x, camRay.GetPoint(planeDist).y + offset.y, camRay.GetPoint(planeDist).z + offset.z);
+    }
+    else
+    {
+      if (Vector2.SqrMagnitude(dragStart - camRay.GetPoint(planeDist)) > .25f)
+        TrackManager.Error("Restart to move flag");
+    }
   }
 }

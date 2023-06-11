@@ -1,0 +1,27 @@
+ .gitignore                                         |   1 +
+ Assets/Prefabs/Flag.prefab                         |  15 +-
+ Assets/Scenes/SampleScene.unity                    | 282 +++++------
+ Assets/Scripts/Cart.cs                             |  79 +--
+ Assets/Scripts/Flag.cs                             |  99 ++--
+ Assets/Scripts/Track.cs                            |  10 +-
+ Assets/Scripts/TrackManager.cs                     |  66 ++-
+ .../Build/2023-05-08-21-29.framework.js            |   5 -
+ .../2023-05-08-21-29/Build/2023-05-08-21-29.wasm   | Bin 13511234 -> 0 bytes
+ Builds/2023-05-08-21-29/index.html                 |  56 --
+ .../Build/2023-05-08-21-46.framework.js            |   5 -
+ .../2023-05-08-21-56/Build/2023-05-08-21-56.data   | Bin 6438449 -> 0 bytes
+ .../Build/2023-05-08-21-56.framework.js            |   5 -
+ .../Build/2023-05-08-21-56.loader.js               |   1 -
+ .../Build/2023-06-09-14-48.data}                   | Bin 6438449 -> 6427916 bytes
+ .../Build/2023-06-09-14-48.framework.js            |   5 +
+ .../Build/2023-06-09-14-48.loader.js}              |   0
+ .../Build/2023-06-09-14-48.wasm}                   | Bin 13511234 -> 13308924 bytes
+ .../index.html                                     |   8 +-
+ .../Build/2023-06-11-18-51.data}                   | Bin 6438442 -> 6428523 bytes
+ .../Build/2023-06-11-18-51.framework.js            |   5 +
+ .../Build/2023-06-11-18-51.loader.js}              |   0
+ .../Build/2023-06-11-18-51.wasm}                   | Bin 13511319 -> 13310669 bytes
+ .../index.html                                     |   8 +-
+ UserSettings/Layouts/CurrentMaximizeLayout.dwlt    | 564 ++++++++++-----------
+ UserSettings/Layouts/default-2021.dwlt             | 481 +++++++++++-------
+ 26 files changed, 888 insertions(+), 807 deletions(-)

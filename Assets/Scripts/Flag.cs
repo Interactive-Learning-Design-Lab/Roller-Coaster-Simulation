@@ -111,18 +111,18 @@ public class Flag : MonoBehaviour
     Destroy(gameObject);
   }
 
-  void OnDrawGizmos()
-  {
-    try
-    {
-      Gizmos.DrawLine(transform.position, cart.position);
+  // void OnDrawGizmos()
+  // {
+  //   try
+  //   {
+  //     Gizmos.DrawLine(transform.position, cart.position);
 
-    }
-    catch (System.Exception)
-    {
+  //   }
+  //   catch (System.Exception)
+  //   {
 
-    }
-  }
+  //   }
+  // }
 
   // Update is called once per frame
   void Update()
@@ -145,7 +145,7 @@ public class Flag : MonoBehaviour
       {
         closest = cart.position;
         acceleration = cartScript.d_acc.magnitude;
-        velocity = cartScript.vel;
+        velocity = cartScript.d_vel.magnitude;
         PE = cartScript.d_PE;
         KE = cartScript.d_KE;
         TE = cartScript.d_totalEnergy;

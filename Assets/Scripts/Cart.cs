@@ -68,6 +68,8 @@ public class Cart : MonoBehaviour
   TrackManager track;
   private float theta;
   public Vector3 d_acc;
+  public Vector3 d_vel;
+  private Vector3 d_previous_vel;
 
   public void StartSim()
   {
@@ -103,7 +105,7 @@ public class Cart : MonoBehaviour
 
   public void RestartSim()
   {
-      PauseSim();
+    PauseSim();
     atStart = true;
 
     if (track.trackPoints.Count > 0)
@@ -129,7 +131,7 @@ public class Cart : MonoBehaviour
       vel = 0f;
       acceleration = Vector3.zero;
       accel = 0f;
-     
+
       GameObject[] flags = GameObject.FindGameObjectsWithTag("Flag");
       foreach (GameObject flag in flags)
       {
@@ -138,44 +140,48 @@ public class Cart : MonoBehaviour
       float theta = track.GetClosestPointSlope(transform.position);
       transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
       Show();
-    } else {
+    }
+    else
+    {
       releaseHeight = 0;
     }
-      float d_ReleaseHeight = round(releaseHeight);
-      d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
-      d_PE = d_totalEnergy;
-      d_acc = Vector3.zero;
-      d_KE = 0f;
-      d_HE = 0f;
+    float d_ReleaseHeight = round(releaseHeight);
+    d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
+    d_PE = d_totalEnergy;
+    d_acc = Vector3.zero;
+    d_KE = 0f;
+    d_HE = 0f;
+    d_previous_vel = Vector3.zero;
+    d_vel = Vector3.zero;
 
-    
-      velocityText.text = "Velocity: " + vel.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
-      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
-      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
-      float maxVal = 0;
-      if (d_totalEnergy >= 0.1f)
-      {
-        maxVal = d_totalEnergy;
-        PESlider.maxValue = maxVal;
-        PESlider.value = d_PE;
-      }
-      else
-      {
-        PESlider.maxValue = maxVal;
-        PESlider.value = 0;
-        maxVal = 1f;
-      }
-      KESlider.value = 0;
-      HESlider.value = 0;
+    velocityText.text = "Velocity: " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
+    accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+    KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
-      KESlider.maxValue = 1f;
-      HESlider.maxValue = 1f;
-    
+    float maxVal = 0;
+    if (d_totalEnergy >= 0.1f)
+    {
+      maxVal = d_totalEnergy;
+      PESlider.maxValue = maxVal;
+      PESlider.value = d_PE;
+    }
+    else
+    {
+      PESlider.maxValue = maxVal;
+      PESlider.value = 0;
+      maxVal = 1f;
+    }
+    KESlider.value = 0;
+    HESlider.value = 0;
+
+    KESlider.maxValue = 1f;
+    HESlider.maxValue = 1f;
+
   }
 
   public void Hide()
@@ -224,7 +230,7 @@ public class Cart : MonoBehaviour
     PESlider = GameObject.Find("PESlider").GetComponent<Slider>();
     TEText = GameObject.Find("TE").GetComponent<Text>();
     RAText = GameObject.Find("RA").GetComponent<Text>();
-    Time.timeScale = 4f;
+    // Time.timeScale = 4f;
     track = GameObject.FindGameObjectWithTag("Track Manager").GetComponent<TrackManager>();
     if (track.trackPoints.Count > 0)
       transform.position = track.trackPoints[2];
@@ -237,6 +243,13 @@ public class Cart : MonoBehaviour
     return Mathf.Max(0.00f, Mathf.Round(v * 100) / 100f);
   }
 
+  void OnDrawGizmos()
+  {
+    // Gizmos.color = Color.red;
+    // Gizmos.DrawLine(transform.position, transform.position - velVector);
+    // Gizmos.color = Color.green;
+    // Gizmos.DrawLine(transform.position, transform.position - lastVel);
+  }
 
   // Update is called once per frame
   void FixedUpdate()
@@ -271,22 +284,7 @@ public class Cart : MonoBehaviour
         d_PE = d_totalEnergy - (d_HE + d_KE);
       }
 
-      Vector3[] cp = track.GetClosestPoints(transform.position);
-      Vector3 netForce = mass * 9.81f * Mathf.Sin(theta) * transform.right;
-      acceleration = netForce / mass;
-      lastVel = velVector;
-      velVector += acceleration * Time.fixedUnscaledDeltaTime;
-      d_acc = (velVector - lastVel) / Time.fixedUnscaledDeltaTime;
-
-      // Debug.Log(Vector3.Dot(-transform.up, transform.position + Vector3.right));
-      Debug.DrawLine(transform.position, transform.position - transform.up, Color.red);
-      Debug.DrawLine(transform.position, transform.position + Vector3.right, Color.blue);
-      Debug.DrawLine(transform.position, transform.position + d_acc, Color.green);
-
-
-
-      velocityText.text = "Velocity: " + vel.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
-      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+      velocityText.text = "Velocity: " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
       KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
       PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
       HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
@@ -313,15 +311,12 @@ public class Cart : MonoBehaviour
       PESlider.maxValue = maxVal;
       HESlider.maxValue = maxVal;
     }
-    // else if()
-    {
-      
-    }
+
 #if UNITY_WEBGL && !UNITY_EDITOR
       bool atEnd = (Vector3.SqrMagnitude(transform.position - track.trackPoints[track.trackPoints.Count - 1]) <= Vector3.kEpsilon * Vector3.kEpsilon);
       string frontendJSON = "{" +
                           "\"acceleration\": " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) +
-                          ", \"velocity\": " + vel.ToString("F2", CultureInfo.InvariantCulture) +
+                          ", \"velocity\": " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) +
                           ", \"position\": " + TrackManager.formatVector(transform.position) +
                           ", \"kinetic_energy\": " + d_KE.ToString("F2", CultureInfo.InvariantCulture) +
                           ", \"potential_energy\": " + d_PE.ToString("F2", CultureInfo.InvariantCulture) +
@@ -341,14 +336,13 @@ public class Cart : MonoBehaviour
     {
       if (!paused && track.trackPoints.Count > 0 && (!slowDown || vel > 0.01f))
       {
-        // Vector3 initialVelocity = vel * transform.right * (positiveVel ? 1 : -1);
-
         if (transform.position.x >= track.trackPoints[track.trackPoints.Count - 31].x)
         {
           slowDown = true;
         }
         // get rotation
         theta = track.GetClosestPointSlope(transform.position);
+
         transform.rotation = Quaternion.Euler(0, 0, -180 + Mathf.Rad2Deg * theta);
 
         if (deltaTime <= 0)
@@ -362,19 +356,22 @@ public class Cart : MonoBehaviour
             final = transform.position;
           }
 
-
           int q = 0;
-          while (deltaTime < Time.fixedDeltaTime)
+          while (deltaTime < Time.fixedUnscaledDeltaTime)
           {
-
             // get prev, current, and next point
             Vector3[] closestPoints = track.GetClosestPoints((Vector3)final);
 
-            if (closestPoints[1] == closestPoints[2])
+            // if current and next point are the same, this means cart hit the wall 
+            if (Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < Vector3.kEpsilonNormalSqrt)
             {
+              // transfer all velocity to acceleration
+              d_acc = vel * transform.right / deltaTime;
               vel = 0;
               break;
             }
+
+            // set initial to current point
             initial = closestPoints[1];
 
             // if the cart is too high it'll fall back, change the velocity's sign and start going the other way
@@ -383,12 +380,13 @@ public class Cart : MonoBehaviour
               tooHigh = true;
               positiveVel = !positiveVel;
             }
+            // detect when cart is no longer too high
             if (initial.y + 0.03f < releaseHeight && tooHigh)
             {
               tooHigh = false;
             }
 
-            // choose the next point
+            // choose the next point to go to (either previous or next point in track)
             if (positiveVel)
             {
               final = closestPoints[2];
@@ -397,76 +395,61 @@ public class Cart : MonoBehaviour
             {
               final = closestPoints[0];
             }
-            PE = mass * 9.81f * transform.position.y;// * friction;
+
+            // calculate actual potential energy (PE) from height
+            PE = mass * 9.81f * transform.position.y;
+            // if PE calculated from height > total energy (TE) something is wrong
             if (PE > TE && !slowDown)
             {
-              // tooHigh = true;
+              // revert to last valid velocity to avoid climbing further up
               vel = lastValidVel;
-              // final = initial;
+              // fix PE value to equal what it should equal (TE - kinetic energy)
               PE = TE - KE;
-
             }
             else
             {
-
+              // if cart is slowing down and not too high
               if (slowDown && !tooHigh)
               {
-                // TE = PE + KE - mu * 4 * vel * Time.fixedDeltaTime;
-                HE += mu * 4 * vel * Time.fixedDeltaTime;
-                // TE = PE + KE - HE;
+                // start turning velocity into thermal energy (HE)
+                HE += mu * 4 * vel * Time.fixedUnscaledDeltaTime;
               }
+              // recalculate KE in case HE is increased
               KE = TE - (PE + HE);
+              // if KE <= 0, this means car stopped
               if (KE <= 0)
               {
+                // set KE, vel to 0
                 KE = 0;
                 vel = 0;
+                // transfer all remaining energy to heat
                 HE = TE - PE;
+                d_HE += d_KE;
+                // reset acc and KE
+                d_acc = Vector3.zero;
+                d_KE = 0;
 
-        
-        d_acc = Vector3.zero;
-        d_HE += d_KE;
-        d_KE = 0;
-        
-        velocityText.text = "Velocity: " + vel.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
-      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
-      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-
-            float maxVal = 0;
-      if (d_totalEnergy >= 0.1f)
-      {
-        maxVal = d_totalEnergy;
-      }
-      else
-      {
-        maxVal = 1f;
-      }
-      KESlider.value = d_KE;
-      HESlider.value = d_HE;
-
-      KESlider.maxValue = maxVal;
-      HESlider.maxValue = maxVal;
+                UpdateDynamic();
                 PauseSim();
-
+                break;
               }
               else
               {
+
                 vel = Mathf.Sqrt((2 * KE) / mass);
+                UpdateDynamic();
               }
             }
 
-
+            // now the current velocity is the last valid velocity
             lastValidVel = vel;
 
-
-            // find the time it takes to get to the next point
-            deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel * 5f;
+            // find the total time it takes to get to the next point
+            deltaTime += Vector3.Magnitude((Vector3)final - initial) / vel;
             duration = deltaTime;
 
             if (q++ > 100)
             { /* HE += KE; KE = 0;vel = 0*/
-              ;
               if (slowDown)
                 vel = 0;
               else
@@ -480,23 +463,27 @@ public class Cart : MonoBehaviour
                   final = closestPoints[0];
                 }
                 // transform.position = (Vector3) final;
-                duration *= 2f * vel;
-                deltaTime *= 2f * vel;
+                // duration *= 2f * vel;
+                // deltaTime *= 2f * vel;
                 // Debug.Log("break while");
                 break;
                 // duration = Time.fixedDeltaTime;
               }
               // break;
             }
-
           }
         }
 
-
-        Vector3 target = Vector3.Lerp(transform.position, (Vector3)final, Time.fixedDeltaTime / duration);
+        Vector3 target = Vector3.Lerp(transform.position, (Vector3)final, Time.fixedUnscaledDeltaTime / duration);
         if (target.y < releaseHeight)
           transform.position = target;
-        deltaTime -= Time.fixedDeltaTime;
+        deltaTime -= Time.fixedUnscaledDeltaTime;
+        d_vel = Mathf.Sqrt((2 * KE) / mass) * transform.right;
+        d_acc = (d_vel - d_previous_vel) / duration;
+        d_previous_vel = d_vel;
+
+        Debug.DrawRay(transform.position, transform.position + d_acc, Color.blue);
+        Debug.DrawRay(transform.position, transform.position + d_vel, Color.green);
         // if ((Vector3.SqrMagnitude(closestPoints[1] - closestPoints[2]) < 0.0001f && positiveVel) || 
         //     (Vector3.SqrMagnitude(closestPoints[0] - closestPoints[1]) < 0.0001f && !positiveVel))
         // {
@@ -516,32 +503,37 @@ public class Cart : MonoBehaviour
         HE += KE;
         KE = 0;
         vel = 0;
-        
+
         d_acc = Vector3.zero;
         d_HE += d_KE;
         d_KE = 0;
-        
-        velocityText.text = "Velocity: " + vel.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
-      accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
-      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
 
-            float maxVal = 0;
-      if (d_totalEnergy >= 0.1f)
-      {
-        maxVal = d_totalEnergy;
-      }
-      else
-      {
-        maxVal = 1f;
-      }
-      KESlider.value = d_KE;
-      HESlider.value = d_HE;
-
-      KESlider.maxValue = maxVal;
-      HESlider.maxValue = maxVal;
+        UpdateDynamic();
       }
     }
+  }
+
+  void UpdateDynamic()
+  {
+    velocityText.text = "Velocity: " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
+    accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+    KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    KESlider.value = d_KE;
+    HESlider.value = d_HE;
+
+    float maxVal = 0;
+    if (d_totalEnergy >= 0.1f)
+    {
+      maxVal = d_totalEnergy;
+    }
+    else
+    {
+      maxVal = 1f;
+    }
+
+    KESlider.maxValue = maxVal;
+    HESlider.maxValue = maxVal;
   }
 }

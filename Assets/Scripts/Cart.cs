@@ -156,7 +156,7 @@ public class Cart : MonoBehaviour
 
 
     velocityText.text = "Velocity: " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
-    accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+    // accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
     KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
     PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
     HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
@@ -200,6 +200,7 @@ public class Cart : MonoBehaviour
   public void SetMass(float mass)
   {
     this.mass = mass;
+    transform.localScale = new Vector3(Mathf.Pow(mass, 0.1771838201f)*0.75f, Mathf.Pow(mass, 0.1771838201f)*0.75f, transform.localScale.z);
     GameObject.Find("MText").GetComponent<Text>().text = "Mass: " + mass.ToString("F2", CultureInfo.InvariantCulture) + " kg";
     RestartSim();
   }
@@ -221,7 +222,7 @@ public class Cart : MonoBehaviour
 
     sr = GetComponent<SpriteRenderer>();
     velocityText = GameObject.Find("Velocity").GetComponent<Text>();
-    accelerationText = GameObject.Find("Acceleration").GetComponent<Text>();
+    // accelerationText = GameObject.Find("Acceleration").GetComponent<Text>();
     KEText = GameObject.Find("KE").GetComponent<Text>();
     KESlider = GameObject.Find("KESlider").GetComponent<Slider>();
     HEText = GameObject.Find("HE").GetComponent<Text>();
@@ -516,7 +517,7 @@ public class Cart : MonoBehaviour
   void UpdateDynamic()
   {
     velocityText.text = "Velocity: " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
-    accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+    // accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
     KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
     PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
     HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";

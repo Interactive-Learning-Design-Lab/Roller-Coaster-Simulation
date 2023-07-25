@@ -57,10 +57,10 @@ public class Flag : MonoBehaviour
     {
       velocityText = GameObject.Find("Flag Velocity").GetComponent<Text>();
     }
-    if (accelerationText == null)
-    {
-      accelerationText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
-    }
+    // if (accelerationText == null)
+    // {
+    //   accelerationText = GameObject.Find("Flag Acceleration").GetComponent<Text>();
+    // }
     if (KEText == null)
     {
       KEText = GameObject.Find("Flag KE").GetComponent<Text>();
@@ -157,7 +157,7 @@ public class Flag : MonoBehaviour
     if (TrackManager.selectedFlag == gameObject)
     {
       velocityText.text = "Velocity: " + velocity.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
-      accelerationText.text = "Acceleration: " + (acceleration).ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+      // accelerationText.text = "Acceleration: " + (acceleration).ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
       KEText.text = "Kinetic Energy: " + KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
       PEText.text = "Potential Energy: " + PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
       HEText.text = "Thermal Energy: " + HE.ToString("F2", CultureInfo.InvariantCulture) + " j";

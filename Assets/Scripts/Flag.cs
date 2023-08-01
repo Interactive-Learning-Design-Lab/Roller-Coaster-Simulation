@@ -20,6 +20,7 @@ public class Flag : MonoBehaviour
   public static Text accelerationText;
   public static Text PEText;
   public static Text KEText;
+  public static Text heightText;
   public static Text TEText;
   public static Text HEText;
   public static GameObject flagValues = null;
@@ -64,6 +65,10 @@ public class Flag : MonoBehaviour
     if (KEText == null)
     {
       KEText = GameObject.Find("Flag KE").GetComponent<Text>();
+    }
+    if (heightText == null)
+    {
+      heightText = GameObject.Find("Flag Height").GetComponent<Text>();
     }
     if (PEText == null)
     {
@@ -158,6 +163,8 @@ public class Flag : MonoBehaviour
     {
       velocityText.text = "Velocity: " + velocity.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
       // accelerationText.text = "Acceleration: " + (acceleration).ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
+      heightText.text = "Flag Height: " + transform.position.y.ToString("F2", CultureInfo.InvariantCulture) + " m";
+
       KEText.text = "Kinetic Energy: " + KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
       PEText.text = "Potential Energy: " + PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
       HEText.text = "Thermal Energy: " + HE.ToString("F2", CultureInfo.InvariantCulture) + " j";

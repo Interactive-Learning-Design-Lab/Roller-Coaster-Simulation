@@ -16,6 +16,7 @@ public class Flag : MonoBehaviour
   public float TE;
   public float HE;
 
+  public static TrackManager track; 
   public static Text velocityText;
   public static Text accelerationText;
   public static Text PEText;
@@ -57,6 +58,10 @@ public class Flag : MonoBehaviour
     if (velocityText == null)
     {
       velocityText = GameObject.Find("Flag Velocity").GetComponent<Text>();
+    }
+    if (track == null){
+        track = GameObject.FindGameObjectWithTag("Track Manager").GetComponent<TrackManager>();
+
     }
     // if (accelerationText == null)
     // {
@@ -163,7 +168,6 @@ public class Flag : MonoBehaviour
     {
       velocityText.text = "Velocity: " + velocity.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
       // accelerationText.text = "Acceleration: " + (acceleration).ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
-      heightText.text = "Flag Height: " + transform.position.y.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
       KEText.text = "Kinetic Energy: " + KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
       PEText.text = "Potential Energy: " + PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
@@ -174,6 +178,8 @@ public class Flag : MonoBehaviour
 
   void OnMouseDown()
   {
+    heightText.text = "Flag Height: " + track.GetClosestPoints(transform.position)[1].y.ToString("F2", CultureInfo.InvariantCulture) + " m";
+
     dragPlane = new Plane(mainCam.transform.forward, transform.position);
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 
@@ -197,7 +203,7 @@ public class Flag : MonoBehaviour
 
   void OnMouseDrag()
   {
-
+    heightText.text = "Flag Height: " + track.GetClosestPoints(transform.position)[1].y.ToString("F2", CultureInfo.InvariantCulture) + " m";
     flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
 
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);

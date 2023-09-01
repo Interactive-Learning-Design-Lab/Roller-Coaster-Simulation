@@ -150,7 +150,6 @@ public class Flag : MonoBehaviour
       if (Mathf.Sqrt(dist) < .2f)
       {
         closest = cart.position;
-        railHeight = round(cart.position.y);
         PE = round(cartScript.mass) * 9.81f * railHeight;
         acceleration = cartScript.d_acc.magnitude;
         TE = round(cartScript.mass) * 9.81f * round(cartScript.releaseHeight);
@@ -182,7 +181,7 @@ public class Flag : MonoBehaviour
 
   void OnMouseDown()
   {
-    railHeight = track.GetClosestPoints(transform.position)[1].y;
+    railHeight = round(track.GetClosestPoints(transform.position)[1].y);
     heightText.text = "Rail Height: " + railHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
     dragPlane = new Plane(mainCam.transform.forward, transform.position);
@@ -209,7 +208,7 @@ public class Flag : MonoBehaviour
   void OnMouseDrag()
   {
     
-    railHeight = track.GetClosestPoints(transform.position)[1].y;
+    railHeight = round(track.GetClosestPoints(transform.position)[1].y);
     heightText.text = "Rail Height: " + railHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
     flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
 

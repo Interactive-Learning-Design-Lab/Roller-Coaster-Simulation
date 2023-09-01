@@ -65,7 +65,7 @@ public class Cart : MonoBehaviour
   [SerializeField]
   float tolerance = 0.5f;
 
-  TrackManager track;
+  public TrackManager track;
   private float theta;
   public Vector3 d_acc;
   public Vector3 d_vel;
@@ -241,7 +241,7 @@ public class Cart : MonoBehaviour
 
   float round(float v)
   {
-    return Mathf.Max(0.00f, Mathf.Round(v * 100) / 100f);
+    return Mathf.Max(0.00f, Mathf.Round(v * 100f) / 100f);
   }
 
   void OnDrawGizmos()

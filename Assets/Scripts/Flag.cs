@@ -15,6 +15,7 @@ public class Flag : MonoBehaviour
   public float KE;
   public float TE;
   public float HE;
+  public float railHeight;
 
   public static TrackManager track; 
   public static Text velocityText;
@@ -123,17 +124,12 @@ public class Flag : MonoBehaviour
 
   // void OnDrawGizmos()
   // {
-  //   try
-  //   {
-  //     Gizmos.DrawLine(transform.position, cart.position);
-
-  //   }
-  //   catch (System.Exception)
-  //   {
-
-  //   }
+  //   Gizmos.DrawSphere(track.GetClosestPoints(transform.position)[1], 0.1f);
   // }
-
+  float round(float v)
+  {
+    return Mathf.Max(0.00f, Mathf.Round(v * 100f) / 100f);
+  }
   // Update is called once per frame
   void Update()
   {
@@ -147,19 +143,27 @@ public class Flag : MonoBehaviour
     }
     // Debug.Log(smallestDistance + " "  + Vector3.SqrMagnitude(transform.position - cart.position));
     // Debug.Log(smallestDistance > Vector3.SqrMagnitude(transform.position - cart.position));
-    float dist = Vector3.SqrMagnitude(transform.position + 3 * Vector3.forward - cart.position);
+    float dist = (transform.position + 3 * Vector3.forward - cart.position).sqrMagnitude;
     if (!cartScript.paused && dist < smallestDistance)
     {
 
       if (Mathf.Sqrt(dist) < .2f)
       {
         closest = cart.position;
+        railHeight = round(cart.position.y);
+        PE = round(cartScript.mass) * 9.81f * railHeight;
         acceleration = cartScript.d_acc.magnitude;
-        velocity = cartScript.d_vel.magnitude;
-        PE = cartScript.d_PE;
-        KE = cartScript.d_KE;
-        TE = cartScript.d_totalEnergy;
-        HE = cartScript.d_HE;
+        TE = round(cartScript.mass) * 9.81f * round(cartScript.releaseHeight);
+        if (transform.position.x >= cartScript.track.trackPoints[track.trackPoints.Count - 31].x) {
+          velocity = cartScript.d_vel.magnitude;
+          KE = cartScript.d_KE;
+          HE = cartScript.d_HE;
+        } else {
+          KE = TE - PE;
+          HE = 0;
+          velocity = Mathf.Sqrt(2 * KE / cartScript.mass);
+        }
+        
       }
       smallestDistance = dist;
     }
@@ -178,7 +182,8 @@ public class Flag : MonoBehaviour
 
   void OnMouseDown()
   {
-    heightText.text = "Flag Height: " + track.GetClosestPoints(transform.position)[1].y.ToString("F2", CultureInfo.InvariantCulture) + " m";
+    railHeight = track.GetClosestPoints(transform.position)[1].y;
+    heightText.text = "Rail Height: " + railHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
     dragPlane = new Plane(mainCam.transform.forward, transform.position);
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
@@ -203,7 +208,9 @@ public class Flag : MonoBehaviour
 
   void OnMouseDrag()
   {
-    heightText.text = "Flag Height: " + track.GetClosestPoints(transform.position)[1].y.ToString("F2", CultureInfo.InvariantCulture) + " m";
+    
+    railHeight = track.GetClosestPoints(transform.position)[1].y;
+    heightText.text = "Rail Height: " + railHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
     flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
 
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);

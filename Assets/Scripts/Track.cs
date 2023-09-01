@@ -108,14 +108,15 @@ public class Track : MonoBehaviour
     switch (type)
     {
       case TrackType.down:
-        for (float x = -width / 2; x <= width / 2; x += 1f / resolution)
+        points.Add(transform.position + new Vector3(-width/2, height));
+        for (float x = -width / 2; x <= width / 2; x += 0.4f / resolution)
         {
           points.Add(transform.position + new Vector3(x, DownSlope(x)));
         }
         break;
 
       case TrackType.up:
-        for (float x = -width / 2f; x <= width / 2f; x += 1f / resolution)
+        for (float x = -width / 2f; x <= width / 2f; x += 0.4f / resolution)
         {
           points.Add(transform.position + new Vector3(x, UpSlope(x)));
         }
@@ -185,12 +186,12 @@ public class Track : MonoBehaviour
 
   float DownSlope(float x)
   {
-    return height / 2 * (1 - (float)Math.Tanh(6f * x / width));
+    return height / 2 * (1 - (float)Math.Tanh(7f * x / width));
   }
 
   float UpSlope(float x)
   {
-    return height / 2 * (1 - (float)Math.Tanh(-6f * x / width));
+    return height / 2 * (1 - (float)Math.Tanh(-7f * x / width));
   }
 
   float Hill(float x)

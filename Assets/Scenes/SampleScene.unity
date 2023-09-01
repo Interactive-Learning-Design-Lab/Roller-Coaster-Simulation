@@ -9655,7 +9655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9675,7 +9675,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Flag Height: '
+  m_Text: 'Rail Height: '
 --- !u!222 &1274063874
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12851,6 +12851,7 @@ MonoBehaviour:
   velVector: {x: 0, y: 0, z: 0}
   onTrack: 0
   tolerance: 0.1
+  track: {fileID: 0}
   d_acc: {x: 0, y: 0, z: 0}
   d_vel: {x: 0, y: 0, z: 0}
 --- !u!1 &1684749530

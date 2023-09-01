@@ -217,7 +217,8 @@ public class TrackManager : MonoBehaviour
 
     for (int i = 0; i < trackPoints.Count; i++)
     {
-      float sqDist = Vector3.SqrMagnitude(position - trackPoints[i]);
+      Vector2 diff = position - trackPoints[i];
+      float sqDist = diff.sqrMagnitude;
       // Debug.Log("position");
       // Debug.Log(position);
       //       Debug.Log("trackPoints["+i+"]");

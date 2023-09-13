@@ -157,10 +157,10 @@ public class Cart : MonoBehaviour
 
     velocityText.text = "Velocity: " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
     // accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
-    KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-    PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-    HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-    TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+    PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+    HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+    TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) + " J";
     RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
     float maxVal = 0;
@@ -286,10 +286,10 @@ public class Cart : MonoBehaviour
       }
 
       velocityText.text = "Velocity: " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
-      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+      PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+      HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+      TEText.text = "Total Energy: " + d_totalEnergy.ToString("F2", CultureInfo.InvariantCulture) + " J";
       RAText.text = "Initial Drop: " + d_ReleaseHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
 
       float maxVal = 0;
@@ -518,9 +518,9 @@ public class Cart : MonoBehaviour
   {
     velocityText.text = "Velocity: " + d_vel.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
     // accelerationText.text = "Acceleration: " + d_acc.magnitude.ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
-    KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-    PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-    HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+    KEText.text = "Kinetic Energy: " + d_KE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+    PEText.text = "Potential Energy: " + d_PE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+    HEText.text = "Thermal Energy: " + d_HE.ToString("F2", CultureInfo.InvariantCulture) + " J";
     KESlider.value = d_KE;
     HESlider.value = d_HE;
 

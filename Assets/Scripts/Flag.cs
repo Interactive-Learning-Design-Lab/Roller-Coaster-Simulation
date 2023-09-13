@@ -30,6 +30,7 @@ public class Flag : MonoBehaviour
   // Drag & pan helper vars
   Plane dragPlane;
   Vector3 offset;
+  public Vector2 panelOffset = Vector2.zero;
   private Vector3 dragStart;
   Camera mainCam;
 
@@ -172,10 +173,10 @@ public class Flag : MonoBehaviour
       velocityText.text = "Velocity: " + velocity.ToString("F2", CultureInfo.InvariantCulture) + " m/s";
       // accelerationText.text = "Acceleration: " + (acceleration).ToString("F2", CultureInfo.InvariantCulture) + " m/s^2";
 
-      KEText.text = "Kinetic Energy: " + KE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      PEText.text = "Potential Energy: " + PE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      HEText.text = "Thermal Energy: " + HE.ToString("F2", CultureInfo.InvariantCulture) + " j";
-      TEText.text = "Total Energy: " + TE.ToString("F2", CultureInfo.InvariantCulture) + " j";
+      KEText.text = "Kinetic Energy: " + KE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+      PEText.text = "Potential Energy: " + PE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+      HEText.text = "Thermal Energy: " + HE.ToString("F2", CultureInfo.InvariantCulture) + " J";
+      TEText.text = "Total Energy: " + TE.ToString("F2", CultureInfo.InvariantCulture) + " J";
     }
   }
 
@@ -194,8 +195,8 @@ public class Flag : MonoBehaviour
     if (cartScript.paused)
     {
       flagValues.SetActive(true);
-      flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
-
+      flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f) - new Vector3(panelOffset.x, panelOffset.y);
+      flagValues.GetComponent<Draggable>().flag = this;
 
       TrackManager.selectedFlag = gameObject;
     }
@@ -210,13 +211,13 @@ public class Flag : MonoBehaviour
     
     railHeight = round(track.GetClosestPoints(transform.position)[1].y);
     heightText.text = "Rail Height: " + railHeight.ToString("F2", CultureInfo.InvariantCulture) + " m";
-    flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f);
+    flagValues.transform.position = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.425f) - new Vector3(panelOffset.x, panelOffset.y);
 
     Ray camRay = mainCam.ScreenPointToRay(Input.mousePosition);
 
     float planeDist;
     dragPlane.Raycast(camRay, out planeDist);
-    if (cartScript.paused && cartScript.atStart)
+    if (cartScript.paused && (cartScript.atStart || TrackManager.errCount > 0))
     {
       transform.position = new Vector3(camRay.GetPoint(planeDist).x + offset.x, camRay.GetPoint(planeDist).y + offset.y, camRay.GetPoint(planeDist).z + offset.z);
     }

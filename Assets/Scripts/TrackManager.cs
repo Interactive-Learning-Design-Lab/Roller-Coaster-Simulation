@@ -440,11 +440,11 @@ public class TrackManager : MonoBehaviour
     }
     else if (coincide || errCount > 1)
     {
-      Error("Tracks are too close", 0);
+      Error("Tracks are too close", 5);
     }
     else if (tooFar)
     {
-      Error("Tracks are too far apart", 0);
+      Error("Tracks are too far apart", 5);
     }
 
 

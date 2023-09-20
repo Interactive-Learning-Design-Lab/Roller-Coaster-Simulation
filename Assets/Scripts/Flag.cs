@@ -151,13 +151,19 @@ public class Flag : MonoBehaviour
       if (Mathf.Sqrt(dist) < .2f)
       {
         closest = cart.position;
-        PE = round(cartScript.mass) * 9.81f * railHeight;
+        PE = round(cartScript.mass * 9.81f * round(railHeight));
         acceleration = cartScript.d_acc.magnitude;
-        TE = round(cartScript.mass) * 9.81f * round(cartScript.releaseHeight);
+        TE = round(cartScript.mass * 9.81f * round(cartScript.releaseHeight));
         if (transform.position.x >= cartScript.track.trackPoints[track.trackPoints.Count - 31].x) {
           velocity = cartScript.d_vel.magnitude;
           KE = cartScript.d_KE;
           HE = cartScript.d_HE;
+          PE = cartScript.d_PE;
+          if (transform.position.x >= cartScript.track.trackPoints[track.trackPoints.Count - 1].x) {
+            velocity = 0;
+            KE = 0;
+            HE = TE - PE;
+          }
         } else {
           KE = TE - PE;
           HE = 0;

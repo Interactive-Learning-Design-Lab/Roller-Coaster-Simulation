@@ -279,6 +279,7 @@ public class Cart : MonoBehaviour
       if (d_KE != d_KE || d_KE <= 0.02f)
       {
         d_KE = 0;
+        d_vel = Vector3.zero;
       }
 
       {
@@ -429,7 +430,7 @@ public class Cart : MonoBehaviour
                 // reset acc and KE
                 d_acc = Vector3.zero;
                 d_KE = 0;
-
+                d_vel = Vector3.zero;
                 UpdateDynamic();
                 PauseSim();
                 break;
@@ -508,7 +509,7 @@ public class Cart : MonoBehaviour
         d_acc = Vector3.zero;
         d_HE += d_KE;
         d_KE = 0;
-
+        d_vel = Vector3.zero;
         UpdateDynamic();
       }
     }

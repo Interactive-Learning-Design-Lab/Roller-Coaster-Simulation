@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Globalization;
+using System.Linq;
 
 
 public class TrackManager : MonoBehaviour
@@ -296,12 +297,18 @@ public class TrackManager : MonoBehaviour
       // Debug.Log(GetInstance().trackPoints.Count);
       GetInstance().lineRenderer.positionCount = GetInstance().trackPoints.Count;
       GetInstance().lineRenderer.SetPositions(GetInstance().trackPoints.ToArray());
+      var pos = GetInstance().trackPoints.TakeLast(30).ToArray();
+      Debug.Log(pos.Length);
+      GetInstance().transform.GetChild(0).GetComponent<LineRenderer>().positionCount = 0;
 
+      GetInstance().transform.GetChild(0).GetComponent<LineRenderer>().positionCount = Mathf.Min(GetInstance().lineRenderer.positionCount,30);
+      GetInstance().transform.GetChild(0).GetComponent<LineRenderer>().SetPositions(pos);
       GameObject.Find("Cart").GetComponent<Cart>().RestartSim();
     }
     else
     {
       GetInstance().lineRenderer.positionCount = 0;
+      GetInstance().transform.GetChild(0).GetComponent<LineRenderer>().positionCount = 0;
       GameObject.Find("Cart").GetComponent<Cart>().Hide();
     }
   }

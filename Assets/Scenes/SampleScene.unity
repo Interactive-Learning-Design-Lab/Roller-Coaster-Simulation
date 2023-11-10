@@ -12992,6 +12992,7 @@ MonoBehaviour:
   d_totalEnergy: 0
   lastVel: {x: 0, y: 0, z: 0}
   velVector: {x: 0, y: 0, z: 0}
+  frictionRoad: {fileID: 2100000, guid: bfa288e33cb7249b998991f26bb888c7, type: 2}
   onTrack: 0
   tolerance: 0.1
   track: {fileID: 0}

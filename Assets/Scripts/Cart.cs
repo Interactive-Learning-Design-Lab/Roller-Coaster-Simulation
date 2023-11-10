@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -58,6 +59,7 @@ public class Cart : MonoBehaviour
   Text RAText;
   GameObject startButton;
   GameObject pauseButton;
+  public Material frictionRoad;
 
   [SerializeField]
   bool onTrack = false;
@@ -209,6 +211,9 @@ public class Cart : MonoBehaviour
   {
     this.mu = friction;
     GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + (mu / 100f).ToString("F2", CultureInfo.InvariantCulture);
+    frictionRoad.color = (Mathf.Round(friction * 100f) > 0f) ? 
+      Color.HSVToRGB(7/360f, .49f, 1f) : 
+      Color.HSVToRGB(127/360f, .49f, 1f);
     RestartSim();
   }
 

@@ -186,6 +186,9 @@ public class Flag : MonoBehaviour
     }
   }
 
+  void OnDrawGizmos(){
+    Gizmos.DrawSphere(cartScript.track.trackPoints[track.trackPoints.Count - 31], 0.1f);
+  }
   void OnMouseDown()
   {
     railHeight = round(track.GetClosestPoints(transform.position)[1].y);

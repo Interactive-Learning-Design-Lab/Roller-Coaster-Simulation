@@ -211,9 +211,7 @@ public class Cart : MonoBehaviour
   {
     this.mu = friction;
     GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + (mu / 100f).ToString("F2", CultureInfo.InvariantCulture);
-    frictionRoad.color = (Mathf.Round(friction * 100f) > 0f) ? 
-      Color.HSVToRGB(7/360f, .49f, 1f) : 
-      Color.HSVToRGB(127/360f, .49f, 1f);
+    frictionRoad.color = Color.Lerp(Color.HSVToRGB(127/360f, .49f, 1f), Color.HSVToRGB(7/360f, .49f, 1f), Mathf.Pow(friction));
     RestartSim();
   }
 

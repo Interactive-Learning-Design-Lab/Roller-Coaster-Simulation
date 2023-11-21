@@ -211,7 +211,7 @@ public class Cart : MonoBehaviour
   {
     this.mu = friction;
     GameObject.Find("FText").GetComponent<Text>().text = "Friction: " + (mu / 100f).ToString("F2", CultureInfo.InvariantCulture);
-    frictionRoad.color = Color.Lerp(Color.HSVToRGB(127/360f, .49f, 1f), Color.HSVToRGB(7/360f, .49f, 1f), Mathf.Pow(friction));
+    frictionRoad.color = Color.Lerp(Color.HSVToRGB(127/360f, .49f, 1f), Color.HSVToRGB(0f, .6f, 1f), Mathf.Pow(friction/100f, 1/3f));
     RestartSim();
   }
 
@@ -260,7 +260,7 @@ public class Cart : MonoBehaviour
   {
     float d_ReleaseHeight = round(releaseHeight);
     if (!paused)
-    {
+        {
       atStart = false;
 
       d_totalEnergy = round(mass * 9.81f * d_ReleaseHeight);
@@ -272,7 +272,7 @@ public class Cart : MonoBehaviour
       }
 
       d_HE = round(HE / (initialTotal - PE) * (d_totalEnergy - d_PE));
-      d_KE = round(d_totalEnergy - (d_PE + d_HE));
+            d_KE = round(d_totalEnergy - (d_PE + d_HE));
 
       if (d_HE != d_HE || d_HE <= 0.02f)
       {
